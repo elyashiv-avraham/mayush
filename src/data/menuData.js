@@ -1,205 +1,178 @@
 /**
- * Mayush — Menu / Product Data
- * ──────────────────────────────
- * All product catalog data lives here, completely decoupled from components.
- * Designed for easy future binding to Google Sheets API, Airtable, or CSV endpoint.
- *
- * Each category has:
- *   - id          (string)   Unique key
- *   - name        (string)   Display name (Hebrew)
- *   - icon        (string)   Emoji icon for the category pill
- *
- * Each product has:
- *   - id          (string)   Unique key
- *   - name        (string)   Product name (Hebrew)
- *   - description (string)   Short description
- *   - price       (string)   Display price (e.g. "₪180", "החל מ-₪350")
- *   - image       (string)   Path or URL to product image
- *   - badge       (string?)  Optional pill label ("נמכר ביותר", "חדש", "מומלץ למתנה")
- *   - tags        (string[]) Searchable tags
+ * Mayush — Catalog & Menu Data
+ * ─────────────────────────────────
+ * Clean data structures designed for easy future synchronization
+ * with Google Sheets, Airtable, or a headless CMS API.
  */
 
-const menuData = {
-  categories: [
-    { id: 'all', name: 'הכל', icon: '✦' },
-    { id: 'cakes', name: 'עוגות', icon: '🎂' },
-    { id: 'pastries', name: 'מאפים', icon: '🥐' },
-    { id: 'desserts', name: 'קינוחים', icon: '🍰' },
-    { id: 'macarons', name: 'מאקרונים', icon: '🟣' },
-    { id: 'specials', name: 'ספיישלים', icon: '⭐' },
-  ],
+export const CATEGORIES = [
+  { id: 'all', name: 'הכל מהתפריט', icon: '✦' },
+  { id: 'cakes', name: 'עוגות ראווה ושכבות', icon: '🎂' },
+  { id: 'tarts', name: 'טארטים ופטיסרי', icon: '🥧' },
+  { id: 'boxes', name: 'מארזים ומתנות', icon: '🎁' },
+  { id: 'events', name: 'אירועים והזמנה מראש', icon: '✨' },
+];
 
-  products: [
-    /* ── עוגות (Cakes) ────────────────────────────────── */
-    {
-      id: 'cake-chocolate-noir',
-      categoryId: 'cakes',
-      name: 'שוקולד נואר',
-      description: 'עוגת שכבות שוקולד בלגי 70%, גנאש טראפל, וציפוי מראה מבריק.',
-      price: '₪320',
-      image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop&q=80',
-      badge: 'נמכר ביותר',
-      tags: ['שוקולד', 'עוגה', 'יום הולדת'],
-    },
-    {
-      id: 'cake-pistachio-rose',
-      categoryId: 'cakes',
-      name: 'פיסטוק ורדים',
-      description: 'עוגת מוס פיסטוק עם לב קונפי ורדים, על בסיס דקואז שקדים.',
-      price: '₪350',
-      image: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=600&h=600&fit=crop&q=80',
-      badge: 'חדש',
-      tags: ['פיסטוק', 'ורדים', 'מוס'],
-    },
-    {
-      id: 'cake-vanilla-berries',
-      categoryId: 'cakes',
-      name: 'וניל ופירות יער',
-      description: 'שכבות ספוג וניל מדגסקר, קרם דיפלומט ופירות יער טריים.',
-      price: '₪290',
-      image: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=600&fit=crop&q=80',
-      badge: null,
-      tags: ['וניל', 'פירות יער', 'קלאסי'],
-    },
-    {
-      id: 'cake-red-velvet',
-      categoryId: 'cakes',
-      name: 'רד ולווט רויאל',
-      description: 'עוגת רד ולווט קטיפתית עם קרם גבינה שוויצרי ועיטור אלגנטי.',
-      price: '₪310',
-      image: 'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?w=600&h=600&fit=crop&q=80',
-      badge: null,
-      tags: ['רד ולווט', 'גבינה', 'רומנטי'],
-    },
+export const PRODUCTS = [
+  /* ── עוגות ראווה ושכבות ───────────────────────────── */
+  {
+    id: 'cake-royal-chocolate',
+    name: 'רויאל שוקולד ופרלינה',
+    category: 'cakes',
+    badge: 'נמכר ביותר',
+    description:
+      'תחתית קראנץ׳ לוז פייטה פריך, קרמו שוקולד בלגי 70%, מוס פרלינה אגוזי לוז קטיפתי וציפוי גלאסאז׳ מראה מבריק.',
+    price: 240,
+    image:
+      'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=700&h=700&fit=crop&q=80',
+  },
+  {
+    id: 'cake-pistachio-crown',
+    name: 'כתר פיסטוק ופירות יער',
+    category: 'cakes',
+    badge: 'חדש',
+    description:
+      'ביסקוויט שקדים רך, קונפי פטל אדום טבעי, מוס פיסטוק קלוי מסיציליה ועיטור שנטילי וניל מדגסקר.',
+    price: 260,
+    image:
+      'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=700&h=700&fit=crop&q=80',
+  },
+  {
+    id: 'cake-red-velvet',
+    name: 'רד ולווט רויאל וגבינה',
+    category: 'cakes',
+    badge: null,
+    description:
+      'שכבות ספוג רד ולווט קטיפתי עשיר, קרם גבינת שמנת ניו-יורקית אוורירי ועיטור שושני קרם עדינים.',
+    price: 230,
+    image:
+      'https://images.unsplash.com/photo-1586788680434-30d324b2d46f?w=700&h=700&fit=crop&q=80',
+  },
+  {
+    id: 'cake-caramel-pecan',
+    name: 'דולצ׳ה קרמל ופקאן מוזהב',
+    category: 'cakes',
+    badge: 'מומלץ',
+    description:
+      'עוגת שכבות שוקולד בלונדי, גנאש קרמל מלוח מבושל בעבודת יד, שברי פקאן מקורמל וקראנץ׳ עוגיות חמאה.',
+    price: 250,
+    image:
+      'https://images.unsplash.com/photo-1535141192574-5d4897c13136?w=700&h=700&fit=crop&q=80',
+  },
 
-    /* ── מאפים (Pastries) ──────────────────────────────── */
-    {
-      id: 'pastry-croissant',
-      categoryId: 'pastries',
-      name: 'קרואסון חמאה צרפתי',
-      description: 'קרואסון מחמאה צרפתית AOP, 72 שכבות דקיקות, אפוי טרי כל בוקר.',
-      price: '₪22',
-      image: 'https://images.unsplash.com/photo-1555507036-ab1f4038024a?w=600&h=600&fit=crop&q=80',
-      badge: 'נמכר ביותר',
-      tags: ['קרואסון', 'חמאה', 'בוקר'],
-    },
-    {
-      id: 'pastry-pain-chocolat',
-      categoryId: 'pastries',
-      name: 'פאן או שוקולה',
-      description: 'מאפה שמרים פריך במילוי מקלות שוקולד בלגי מריר.',
-      price: '₪24',
-      image: 'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?w=600&h=600&fit=crop&q=80',
-      badge: null,
-      tags: ['שוקולד', 'מאפה', 'שמרים'],
-    },
-    {
-      id: 'pastry-brioche',
-      categoryId: 'pastries',
-      name: 'בריוש ונילה',
-      description: 'בריוש רך ועשיר בניחוח וניל טהור, עם קראסט סוכר קראנצ׳י.',
-      price: '₪26',
-      image: 'https://images.unsplash.com/photo-1509365390695-33aee754301f?w=600&h=600&fit=crop&q=80',
-      badge: 'חדש',
-      tags: ['בריוש', 'וניל', 'מתוק'],
-    },
+  /* ── טארטים ופטיסרי ─────────────────────────────── */
+  {
+    id: 'tart-lemon-meringue',
+    name: 'טארט לימון ומרנג שוויצרי',
+    category: 'tarts',
+    badge: 'קלאסיקה',
+    description:
+      'קלתית סבלה ברטון פריכה מחמאה צרפתית, קרד לימונים טריים חמצמץ-מתוק ומרנג שוויצרי צרוב בלהבה.',
+    price: 180,
+    image:
+      'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=700&h=700&fit=crop&q=80',
+  },
+  {
+    id: 'tart-strawberry-creme',
+    name: 'טארט תותים ודיפלומט וניל',
+    category: 'tarts',
+    badge: 'עונתי',
+    description:
+      'בצק פריך נימוח, קרם שקדים אפוי, קרם דיפלומט מנוקד במקלות וניל טבעיים ושפע תותים רעננים מזוגגים.',
+    price: 195,
+    image:
+      'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=700&h=700&fit=crop&q=80',
+  },
+  {
+    id: 'tart-chocolate-noisette',
+    name: 'טארטלט שוקולד ואגוזי לוז',
+    category: 'tarts',
+    badge: null,
+    description:
+      'גנאש שוקולד מריר עמוק, פרלינה אגוזי לוז תוצרת בית ומלח מאלדון על בסיס קקאו כהה.',
+    price: 175,
+    image:
+      'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=700&h=700&fit=crop&q=80',
+  },
+  {
+    id: 'tart-exotic-mango',
+    name: 'טארט אקזוטי מנגו ופסיפלורה',
+    category: 'tarts',
+    badge: 'מרענן',
+    description:
+      'קרם פסיפלורה חמצמץ, קוביות מנגו טרי, גנאש מוקצף שוקולד לבן וקוקוס קלוי.',
+    price: 190,
+    image:
+      'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=700&h=700&fit=crop&q=80',
+  },
 
-    /* ── קינוחים (Desserts) ─────────────────────────────── */
-    {
-      id: 'dessert-creme-brulee',
-      categoryId: 'desserts',
-      name: 'קרם ברולה קלאסי',
-      description: 'קרם וניל טהור עם שכבת קרמל קרנצ׳ית שנשרפת בלהבה.',
-      price: '₪48',
-      image: 'https://images.unsplash.com/photo-1470124182917-cc6e71b22ecc?w=600&h=600&fit=crop&q=80',
-      badge: null,
-      tags: ['קרם ברולה', 'קלאסי', 'צרפתי'],
-    },
-    {
-      id: 'dessert-tarte-citron',
-      categoryId: 'desserts',
-      name: 'טארט לימון מרנג',
-      description: 'טארט בצק פריך במילוי קרד לימון חמצמץ ומרנג שוויצרי מלובה.',
-      price: '₪52',
-      image: 'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=600&h=600&fit=crop&q=80',
-      badge: 'מומלץ למתנה',
-      tags: ['טארט', 'לימון', 'מרנג'],
-    },
-    {
-      id: 'dessert-panna-cotta',
-      categoryId: 'desserts',
-      name: 'פנה קוטה ושקדים',
-      description: 'פנה קוטה קטיפתית עם רוטב פירות אדומים ושקדים קלויים.',
-      price: '₪44',
-      image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&h=600&fit=crop&q=80',
-      badge: null,
-      tags: ['פנה קוטה', 'שקדים', 'איטלקי'],
-    },
+  /* ── מארזים ומתנות ──────────────────────────────── */
+  {
+    id: 'box-macarons-12',
+    name: 'מארז מאקרונים פריזאי (12 יח׳)',
+    category: 'boxes',
+    badge: 'מומלץ למתנה',
+    description:
+      '12 מאקרונים פריכים ונימוחים בטעמים מובחרים: פיסטוק, פטל, שוקולד מריר, וניל, קרמל מלוח וקפה.',
+    price: 140,
+    image:
+      'https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=700&h=700&fit=crop&q=80',
+  },
+  {
+    id: 'box-petit-fours',
+    name: 'מארז פטיפורים וקינוחי כוסות',
+    category: 'boxes',
+    badge: 'מארז חגיגי',
+    description:
+      'מבחר 16 קינוחי ביס אלגנטיים: מיני טארטים, מוסים בכוסות קריסטל אישיות וטראפלס שוקולד עבודת יד.',
+    price: 220,
+    image:
+      'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=700&h=700&fit=crop&q=80',
+  },
+  {
+    id: 'box-cookies-truffles',
+    name: 'מארז עוגיות שף וטראפלס',
+    category: 'boxes',
+    badge: null,
+    description:
+      'צנצנת עוגיות חמאה שקדים נימוחות, עוגיות שוקולד צ׳יפס דולצ׳ה וקופסת טראפלס שוקולד בלגי 70%.',
+    price: 135,
+    image:
+      'https://images.unsplash.com/photo-1549488344-cbb6c34cf08b?w=700&h=700&fit=crop&q=80',
+  },
 
-    /* ── מאקרונים (Macarons) ────────────────────────────── */
-    {
-      id: 'macaron-assorted-box',
-      categoryId: 'macarons',
-      name: 'מארז מאקרונים – 12 יח׳',
-      description: 'מבחר 12 מאקרונים צרפתיים בטעמים: פיסטוק, ורד, שוקולד, פסיפלורה, וניל ולבנדר.',
-      price: '₪140',
-      image: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=600&h=600&fit=crop&q=80',
-      badge: 'מומלץ למתנה',
-      tags: ['מאקרון', 'מארז', 'מתנה'],
-    },
-    {
-      id: 'macaron-pistachio',
-      categoryId: 'macarons',
-      name: 'מאקרון פיסטוק',
-      description: 'מאקרון בטעם פיסטוק סיציליאני אמיתי עם גנאש פיסטוק עשיר.',
-      price: '₪14',
-      image: 'https://images.unsplash.com/photo-1558326567-98ae2405596b?w=600&h=600&fit=crop&q=80',
-      badge: null,
-      tags: ['מאקרון', 'פיסטוק'],
-    },
-    {
-      id: 'macaron-raspberry',
-      categoryId: 'macarons',
-      name: 'מאקרון פטל',
-      description: 'מאקרון פטל חמצמץ-מתוק עם מילוי גנאש שוקולד לבן ופטל.',
-      price: '₪14',
-      image: 'https://images.unsplash.com/photo-1571115177098-24ec42ed204d?w=600&h=600&fit=crop&q=80',
-      badge: null,
-      tags: ['מאקרון', 'פטל'],
-    },
-
-    /* ── ספיישלים (Specials) ─────────────────────────────── */
-    {
-      id: 'special-wedding-cake',
-      categoryId: 'specials',
-      name: 'עוגת חתונה מעוצבת',
-      description: 'עוגת קומות מעוצבת אישית עם פרחי סוכר, ציפוי פונדנט או נייקד קייק. מחיר לפי התייעצות.',
-      price: 'החל מ-₪1,200',
-      image: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=600&h=600&fit=crop&q=80',
-      badge: 'הזמנה מראש',
-      tags: ['חתונה', 'עוגת קומות', 'מעוצבת'],
-    },
-    {
-      id: 'special-dessert-table',
-      categoryId: 'specials',
-      name: 'שולחן קינוחים מעוצב',
-      description: 'שולחן קינוחים מלא לאירועים: מיני עוגות, מאקרונים, טארטלטים, פטיפורים ועוד.',
-      price: 'החל מ-₪2,500',
-      image: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&h=600&fit=crop&q=80',
-      badge: 'פרימיום',
-      tags: ['אירועים', 'שולחן קינוחים', 'קייטרינג'],
-    },
-    {
-      id: 'special-gift-box',
-      categoryId: 'specials',
-      name: 'מארז מתנה יוקרתי',
-      description: 'מארז מתנה מעוצב הכולל מאקרונים, בונבוניירות שוקולד, ומאפה הבית.',
-      price: '₪280',
-      image: 'https://images.unsplash.com/photo-1549488344-cbb6c34cf08b?w=600&h=600&fit=crop&q=80',
-      badge: 'מומלץ למתנה',
-      tags: ['מתנה', 'מארז', 'שוקולד'],
-    },
-  ],
-};
-
-export default menuData;
+  /* ── אירועים והזמנה מראש ───────────────────────── */
+  {
+    id: 'event-wedding-cake',
+    name: 'עוגת חתונה / אירוסין קומות',
+    category: 'events',
+    badge: 'הזמנה מראש',
+    description:
+      'עוגת קומות אצילית בעיצוב אישי לפי פלטת צבעי האירוע, פרחי סוכר בעבודת יד ושכבות טעמים מותאמות אישית.',
+    price: 1200,
+    image:
+      'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=700&h=700&fit=crop&q=80',
+  },
+  {
+    id: 'event-sweet-table',
+    name: 'שולחן קינוחים מפואר לאירועים',
+    category: 'events',
+    badge: 'חוויית VIP',
+    description:
+      'עיצוב והקמה של שולחן קינוחי פרימיום מלא: עוגת מרכזית, מגוון פטיפורים, מאקרונים, מוסים אישיים ומעמדים יוקרתיים.',
+    price: 2500,
+    image:
+      'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac?w=700&h=700&fit=crop&q=80',
+  },
+  {
+    id: 'event-bento-cupcakes',
+    name: 'מארז בנטו קייק וקאפקייקס',
+    category: 'events',
+    badge: 'הכי טרנדי',
+    description:
+      'עוגת בנטו אישית עם כיתוב לבחירתכם + 5 קאפקייקס מעוצבים תואמים. מושלם לחגיגות יום הולדת אינטימיות.',
+    price: 180,
+    image:
+      'https://images.unsplash.com/photo-1576618148400-f54bed99fcfd?w=700&h=700&fit=crop&q=80',
+  },
+];

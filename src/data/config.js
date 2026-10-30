@@ -1,81 +1,97 @@
 /**
- * Mayush — Business Configuration
+ * Mayush — Central Configuration
  * ─────────────────────────────────
- * Central config for all business-level data: branding, contact,
- * social links, about copy, and site navigation.
- * Structured for easy future migration to a CMS or external API.
+ * Fully separated data layer for business information,
+ * social links, about copy, time slots, and event builder options.
  */
 
-const config = {
-  /* ── Branding ────────────────────────────────────────── */
-  brand: {
-    nameHe: 'מאיוש',
-    nameEn: 'Mayush',
-    taglineHe: 'בוטיק קונדיטוריה',
-    taglineEn: 'Boutique Pâtisserie',
-    logo: '/images/logo.jpeg',
-  },
-
-  /* ── Navigation Links ───────────────────────────────── */
-  nav: [
-    { id: 'hero', label: 'ראשי' },
-    { id: 'about', label: 'אודות' },
-    { id: 'menu', label: 'התפריט' },
-    { id: 'contact', label: 'צרו קשר' },
+export const CONTACT_INFO = {
+  businessName: 'מאיוש',
+  businessTagline: 'בוטיק קונדיטוריה ועוגות מעוצבות',
+  phoneDisplay: '055-668-7271',
+  phoneClean: '0556687271',
+  whatsappNum: '972556687271',
+  instagramUrl: 'https://www.instagram.com/mayush.food/',
+  instagramHandle: '@mayush.food',
+  email: 'hello@mayush.co.il',
+  address: 'תל אביב - משלוחים ואיסוף בתיאום מראש',
+  logo: '/images/logo.jpeg',
+  workingHours: [
+    { day: 'ראשון – חמישי', hours: '09:00 – 19:00' },
+    { day: 'שישי וערבי חג', hours: '08:30 – 14:00' },
+    { day: 'שבת', hours: 'סגור (נאחל שבת שלום)' },
   ],
-
-  /* ── About / Bio ────────────────────────────────────── */
-  about: {
-    heading: 'הסיפור שלנו',
-    paragraphs: [
-      'מאיוש נולד מתוך אהבה עמוקה לאומנות הקונדיטוריה הצרפתית ותשוקה ליצירת חוויות טעם בלתי נשכחות. כל עוגה, קינוח ומאפה נוצרים בעבודת יד קפדנית, מחומרי גלם מובחרים ובאיכות שאינה מתפשרת.',
-      'אנו מאמינים שכל אירוע ראוי ליצירת מופת קולינרית — ממסיבת יום הולדת אינטימית ועד חתונה מפוארת. בסטודיו שלנו, כל פרט מתוכנן בקפידה: מהטעם המושלם ועד לעיצוב האסתטי שמשאיר רושם.',
-      'בין אם אתם מחפשים עוגת שכבות מרהיבה, מאקרון צרפתי בטעמים ייחודיים, או מגש קינוחים מעוצב — מאיוש הוא הכתובת שלכם לקונדיטוריה ברמה אחרת.',
-    ],
-    highlightQuote: '״כל יצירה שיוצאת מהסטודיו שלנו היא יצירת אמנות שנולדה מתוך אהבה, מסירות ותשומת לב לכל פרט.״',
-  },
-
-  /* ── Contact Details ────────────────────────────────── */
-  contact: {
-    heading: 'צרו קשר',
-    subheading: 'נשמח לשמוע מכם ולעזור לכם ליצור את הקינוח המושלם לכל אירוע.',
-    phone: {
-      display: '055-668-7271',
-      href: 'tel:+972556687271',
-    },
-    email: {
-      display: 'hello@mayush.co.il',
-      href: 'mailto:hello@mayush.co.il',
-    },
-    address: 'תל אביב, ישראל',
-    workingHours: [
-      { day: 'ראשון – חמישי', hours: '09:00 – 19:00' },
-      { day: 'שישי', hours: '08:00 – 14:00' },
-      { day: 'שבת', hours: 'סגור' },
-    ],
-  },
-
-  /* ── Social Links ───────────────────────────────────── */
-  social: {
-    instagram: 'https://instagram.com/mayush_bakery',
-    facebook: 'https://facebook.com/mayush.bakery',
-    whatsapp: 'https://wa.me/972556687271',
-    tiktok: 'https://tiktok.com/@mayush_bakery',
-  },
-
-  /* ── Hero Section ───────────────────────────────────── */
-  hero: {
-    headline: 'אומנות קונדיטוריה\nברמה אחרת',
-    subline: 'עוגות מעוצבות, קינוחים וכל מה שביניהם — ביד אמן, בהשראה צרפתית.',
-    ctaPrimary: { label: 'לתפריט המלא', targetId: 'menu' },
-    ctaSecondary: { label: 'הזמינו עכשיו', href: 'https://wa.me/972556687271' },
-  },
-
-  /* ── Footer ─────────────────────────────────────────── */
-  footer: {
-    copyright: '© {year} מאיוש — כל הזכויות שמורות.',
-    madeWith: 'נוצר באהבה ❤️',
-  },
 };
 
-export default config;
+export const ABOUT_INFO = {
+  title: 'הסיפור שלי',
+  subtitle: 'תשוקה, דיוק ואהבה בכל שכבה וטעם',
+  experienceYears: '5+ שנים',
+  education: 'בוגרת לימודי קונדיטוריה מתקדמת והשתלמויות שף-פטיסייר',
+  currentRole: 'שף פטיסייר ומייסדת בוטיק "מאיוש"',
+  bioParagraph1:
+    'שמי מיה, והסטודיו "מאיוש" נולד מתוך תשוקה עמוקה לעולם הפטיסרי הצרפתי וליצירת רגעים מתוקים שלא שוכחים. כל עוגה, קינוח ומאפה שיוצאים מהמטבח שלי נאפים בקפידה מרבית, תוך שימוש בחומרי הגלם המובחרים ביותר בעולם — שוקולד בלגי 70%, מחית וניל מדגסקר טהורה, וחמאה צרפתית מובחרת.',
+  bioParagraph2:
+    'אני מאמינה שעוגה או שולחן קינוחים הם לב ליבו של כל אירוע. לכן כל הזמנה מקבלת יחס אישי ומדויק, החל מבחירת הטעמים והשכבות ועד לגימור האומנותי והאסתטי המושלם. כאן תמצאו שילוב מדויק בין מראה יוקרתי לטעם בלתי מתפשר.',
+  highlightQuote:
+    '״אפייה עבורי היא לא רק מקצוע — היא שפה של אהבה, דיוק ואומנות שנמסה בפה.״',
+  values: [
+    { title: '100% עבודת יד', desc: 'כל עוגה וקינוח מיוצרים טרי לפי הזמנה בלבד' },
+    { title: 'חומרי גלם מובחרים', desc: 'חמאה צרפתית, שוקולדים איכותיים ופירות טריים' },
+    { title: 'עיצוב והתאמה אישית', desc: 'התאמת טעמים, צבעים וכיתוב אישי לכל לקוח' },
+  ],
+};
+
+export const TIME_SLOTS = [
+  { value: 'morning', label: 'בוקר (09:00 - 12:00)' },
+  { value: 'noon', label: 'צהריים (12:00 - 15:00)' },
+  { value: 'afternoon', label: 'אחר הצהריים (15:00 - 18:00)' },
+  { value: 'evening', label: 'ערב (18:00 - 21:00 בתיאום מראש)' },
+];
+
+export const EVENT_BUILDER_CONFIG = {
+  orderTypes: [
+    { id: 'custom-cake', label: 'עוגת יום הולדת / חגיגה מעוצבת' },
+    { id: 'wedding-cake', label: 'עוגת חתונה / אירוסין קומות' },
+    { id: 'dessert-table', label: 'שולחן קינוחים מלא לאירוע' },
+    { id: 'corporate-box', label: 'מארזי שי ממותגים לחברות' },
+    { id: 'gathering-sweet', label: 'מגשי אירוח ופטיפורים' },
+  ],
+  portionSizes: [
+    { id: 'small', label: 'אירוע אינטימי (10 - 15 סועדים)' },
+    { id: 'medium', label: 'חגיגה בינונית (20 - 30 סועדים)' },
+    { id: 'large', label: 'אירוע גדול (40 - 60 סועדים)' },
+    { id: 'huge', label: 'אירוע ענק (70+ סועדים)' },
+  ],
+  flavorProfiles: [
+    { id: 'choc-praline', label: 'שוקולד בלגי עשיר, נוגט וקראנץ׳ פרלינה' },
+    { id: 'vanilla-berries', label: 'וניל מדגסקר קטיפתי, קרם דיפלומט ופירות יער' },
+    { id: 'pistachio-rose', label: 'פיסטוק סיציליאני טהור עם נגיעות ורדים' },
+    { id: 'caramel-crunch', label: 'קרמל מלוח, שוקולד לבן ופקאן מקורמל' },
+    { id: 'citrus-meringue', label: 'קרד לימון עשיר, בצק פריך ומרנג שוויצרי' },
+    { id: 'custom', label: 'אשמח לייעוץ והתאמה אישית של הטעמים' },
+  ],
+};
+
+export const A11Y_STATEMENT = {
+  title: 'הצהרת נגישות והסדרי נגישות',
+  lastUpdated: 'אוקטובר 2026',
+  summary:
+    'בוטיק הקונדיטוריה "מאיוש" רואה חשיבות עליונה במתן שירות שוויוני, מכבד ונגיש לכלל הלקוחות והגולשים, לרבות אנשים עם מוגבלות. אתר זה הונגש בהתאם לתקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), תשע"ג-2013 ולתקן הישראלי ת"י 5568 ברמת AA המבוסס על מסמך WCAG 2.1 הבינלאומי.',
+  features: [
+    'ניווט מקלדת מלא באמצעות מקש Tab, החצים ו-Enter',
+    'דילוג מהיר ישירות לתוכן המרכזי באמצעות קישור בתחילת הדף',
+    'חלונית נגישות הכוללת שינוי גודל טקסט, גופן קריא, הדגשת קישורים וכותרות',
+    'אפשרות לעצירת אנימציות ותנועה באתר למניעת הבהובים',
+    'התאמת תוכן ורכיבים לקוראי מסך מודרניים',
+    'סגירת חלוניות, תפריטים ומגירות באמצעות מקש Escape',
+  ],
+  physicalAccessibility:
+    'הסטודיו פועל במתכונת של איסוף עצמי ומשלוחים בתיאום מראש. במידה ואתם זקוקים להסדרי נגישות פיזיים לאיסוף או לסיוע במסירת המשלוח, נשמח לסייע ולהתאים את אופן המסירה לפי צרכיכם.',
+  contactPerson: {
+    name: 'מיה - רכזת נגישות',
+    phone: '055-668-7271',
+    whatsapp: '972556687271',
+    email: 'hello@mayush.co.il',
+  },
+};
