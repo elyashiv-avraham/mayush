@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { Routes, Route, Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import {
   CONTACT_INFO,
   ABOUT_INFO,
@@ -56,9 +57,13 @@ const MenuToggleIcon = () => (
 );
 
 const AccessibilityIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <circle cx="12" cy="4" r="2" />
-    <path d="M19 13v-2c-1.54.02-3.09-.75-4.07-1.83l-1.29-1.43c-.17-.19-.38-.34-.61-.45-.24-.11-.49-.17-.75-.17-.67 0-1.29.35-1.63.92l-2.6 4.33c-.36.6-.27 1.37.23 1.86.5.5 1.28.58 1.87.21l1.85-1.16v6.72c0 .55.45 1 1 1s1-.45 1-1v-4.5h1.5v4.5c0 .55.45 1 1 1s1-.45 1-1v-6.66l1.23.82c.57.38 1.33.32 1.84-.15.52-.47.63-1.24.23-1.83L19 13z" />
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="7.5" r="1.2" fill="currentColor" stroke="none" />
+    <path d="M8 11.2h8" />
+    <path d="M10.5 11.2l-1 6.3" />
+    <path d="M13.5 11.2l1 6.3" />
+    <path d="M9 14.5l3 0.5 3-0.5" />
   </svg>
 );
 
@@ -88,12 +93,565 @@ const SparkleIcon = () => (
   </svg>
 );
 
+const ArrowLeftIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
+  </svg>
+);
+
+/* ═══════════════════════════════════════════════════════════
+   PRODUCT CARD COMPONENT (reused in Home highlights + Menu)
+   ═══════════════════════════════════════════════════════════ */
+
+function ProductCard({ product, addToCart, openProductInquiry }) {
+  return (
+    <article className="product-card">
+      <div className="product-card__image-container product-img-wrapper">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="product-card__image"
+          loading="lazy"
+        />
+        <div className="product-card__vignette" />
+        {product.badge && (
+          <span className="product-card__badge">{product.badge}</span>
+        )}
+      </div>
+
+      <div className="product-card__body">
+        <div className="product-card__header">
+          <h3 className="product-card__title">{product.name}</h3>
+          <span className="product-card__price">₪{product.price}</span>
+        </div>
+
+        <p className="product-card__desc">{product.description}</p>
+
+        {/* Dual Action Buttons */}
+        <div className="product-card__actions">
+          {/* Button 1: Add to Cart */}
+          <button
+            type="button"
+            className="btn btn--primary btn--card-action"
+            onClick={() => addToCart(product)}
+          >
+            <ShoppingBagIcon />
+            <span>+ הוספה לסל</span>
+          </button>
+
+          {/* Button 2: WhatsApp Inquiry */}
+          <button
+            type="button"
+            className="btn btn--card-inquiry"
+            onClick={() => openProductInquiry(product.name)}
+            title="בירור בוואטסאפ על מוצר זה"
+          >
+            <WhatsAppIcon />
+            <span>בירור על המוצר</span>
+          </button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HOME PAGE VIEW
+   ═══════════════════════════════════════════════════════════ */
+
+function HomePage({
+  bestSellers,
+  newArrivals,
+  addToCart,
+  openProductInquiry,
+  eventBuilder,
+  setEventBuilder,
+  handleEventBuilderSubmit,
+  scrollToSection,
+}) {
+  return (
+    <>
+      {/* ── HERO SECTION ─────────────────────────────── */}
+      <section id="hero" className="hero-section">
+        <div className="hero-section__backdrop-orb hero-section__backdrop-orb--1" />
+        <div className="hero-section__backdrop-orb hero-section__backdrop-orb--2" />
+
+        <div className="section-container hero-section__container">
+          {/* Circular Brand Logo in Hero */}
+          <div className="hero-section__logo-wrap">
+            <img
+              src={CONTACT_INFO.logo}
+              alt={CONTACT_INFO.businessName}
+              className="hero-section__logo-portrait"
+            />
+          </div>
+
+          <div className="hero-section__badge">
+            <SparkleIcon />
+            <span>{CONTACT_INFO.businessTagline}</span>
+            <SparkleIcon />
+          </div>
+
+          <h1 className="hero-section__title">
+            אומנות קונדיטוריה
+            <br />
+            <span className="hero-section__title-accent">ברמה הגבוהה ביותר</span>
+          </h1>
+
+          <p className="hero-section__subtitle">
+            עוגות ראווה מעוצבות, טארטים צרפתיים ומארזי קינוחי בוטיק —
+            נאפים בעבודת יד מוקפדת מחומרי הגלם הטובים בעולם.
+          </p>
+
+          <div className="hero-section__cta-group">
+            <Link
+              to="/menu"
+              className="btn btn--primary"
+            >
+              <span>לתפריט הקינוחים המלא</span>
+            </Link>
+
+            <button
+              type="button"
+              className="btn btn--outline"
+              onClick={() => scrollToSection('event-builder')}
+            >
+              <span>הזמנה מותאמת לאירועים</span>
+            </button>
+          </div>
+
+          <div className="hero-section__stats">
+            <div className="hero-section__stat">
+              <span className="hero-section__stat-num">{ABOUT_INFO.experienceYears}</span>
+              <span className="hero-section__stat-desc">ניסיון קולינרי</span>
+            </div>
+            <div className="hero-section__stat-divider" />
+            <div className="hero-section__stat">
+              <span className="hero-section__stat-num">100%</span>
+              <span className="hero-section__stat-desc">חמאה צרפתית ושוקולד מובחר</span>
+            </div>
+            <div className="hero-section__stat-divider" />
+            <div className="hero-section__stat">
+              <span className="hero-section__stat-num">טרי בלבד</span>
+              <span className="hero-section__stat-desc">אפייה לפי הזמנה אישית</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── ABOUT SECTION ────────────────────────────── */}
+      <section id="about" className="about-section">
+        <div className="section-container">
+          <div className="section-header">
+            <span className="section-header__tag">נעים להכיר</span>
+            <h2 className="section-header__title">{ABOUT_INFO.title}</h2>
+            <p className="section-header__subtitle">{ABOUT_INFO.subtitle}</p>
+          </div>
+
+          <div className="about-section__grid">
+            <div className="about-section__content">
+              <p className="about-section__paragraph">{ABOUT_INFO.bioParagraph1}</p>
+              <p className="about-section__paragraph">{ABOUT_INFO.bioParagraph2}</p>
+
+              <blockquote className="about-section__quote">
+                <p>{ABOUT_INFO.highlightQuote}</p>
+                <cite>— מיה, מייסדת בוטיק מאיוש</cite>
+              </blockquote>
+
+              <div className="about-section__values">
+                {ABOUT_INFO.values.map((v, idx) => (
+                  <div key={idx} className="about-section__value-card">
+                    <h4 className="about-section__value-title">{v.title}</h4>
+                    <p className="about-section__value-desc">{v.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="about-section__visual">
+              <div className="about-section__card-highlight">
+                <img
+                  src={CONTACT_INFO.logo}
+                  alt={CONTACT_INFO.businessName}
+                  className="about-section__author-logo"
+                />
+                <h3 className="about-section__author-title">
+                  {CONTACT_INFO.businessName}
+                </h3>
+                <p className="about-section__author-role">{ABOUT_INFO.currentRole}</p>
+                <span className="about-section__author-edu">{ABOUT_INFO.education}</span>
+
+                <div className="about-section__contact-badge">
+                  <PhoneIcon />
+                  <a href={`tel:${CONTACT_INFO.phoneClean}`}>
+                    {CONTACT_INFO.phoneDisplay}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── HOME HIGHLIGHTS: BEST SELLERS & NEW ARRIVALS ───────────── */}
+      <section className="highlights-section">
+        <div className="section-container">
+          <div className="highlights-row">
+            <h2 className="highlights-row__title">
+              <SparkleIcon />
+              <span>הכי נמכרים</span>
+              <SparkleIcon />
+            </h2>
+            <div className="products-grid highlights-row__grid">
+              {bestSellers.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  addToCart={addToCart}
+                  openProductInquiry={openProductInquiry}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="highlights-row">
+            <h2 className="highlights-row__title">
+              <SparkleIcon />
+              <span>החדשים שלנו</span>
+              <SparkleIcon />
+            </h2>
+            <div className="products-grid highlights-row__grid">
+              {newArrivals.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  addToCart={addToCart}
+                  openProductInquiry={openProductInquiry}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* CTA to Full Menu */}
+          <div className="highlights-cta">
+            <Link
+              to="/menu"
+              className="btn btn--primary btn--large"
+            >
+              <span>לתפריט המלא</span>
+              <ArrowLeftIcon />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── CUSTOM EVENT ORDER BUILDER SECTION ──────── */}
+      <section id="event-builder" className="event-builder-section">
+        <div className="section-container">
+          <div className="section-header">
+            <span className="section-header__tag">אירועים בהתאמה אישית</span>
+            <h2 className="section-header__title">תכנון עוגה או שולחן קינוחים לאירוע</h2>
+            <p className="section-header__subtitle">
+              חוגגים יום הולדת, חתונה, אירוסין או אירוע חברה?
+              בחרו את הפרטים המתאימים לכם ושלחו אלינו לתיאום ישיר בוואטסאפ.
+            </p>
+          </div>
+
+          <form
+            className="event-builder-form"
+            onSubmit={handleEventBuilderSubmit}
+          >
+            <div className="event-builder-form__grid">
+              {/* 1. Order Type */}
+              <div className="form-group">
+                <label htmlFor="eb-type" className="form-label">
+                  סוג ההזמנה המבוקשת:
+                </label>
+                <select
+                  id="eb-type"
+                  className="form-select"
+                  value={eventBuilder.orderType}
+                  onChange={(e) =>
+                    setEventBuilder({ ...eventBuilder, orderType: e.target.value })
+                  }
+                >
+                  {EVENT_BUILDER_CONFIG.orderTypes.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 2. Portions Size */}
+              <div className="form-group">
+                <label htmlFor="eb-portions" className="form-label">
+                  כמות סועדים משוערת:
+                </label>
+                <select
+                  id="eb-portions"
+                  className="form-select"
+                  value={eventBuilder.portions}
+                  onChange={(e) =>
+                    setEventBuilder({ ...eventBuilder, portions: e.target.value })
+                  }
+                >
+                  {EVENT_BUILDER_CONFIG.portionSizes.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 3. Flavor Profile */}
+              <div className="form-group">
+                <label htmlFor="eb-flavor" className="form-label">
+                  פרופיל טעמים מועדף:
+                </label>
+                <select
+                  id="eb-flavor"
+                  className="form-select"
+                  value={eventBuilder.flavor}
+                  onChange={(e) =>
+                    setEventBuilder({ ...eventBuilder, flavor: e.target.value })
+                  }
+                >
+                  {EVENT_BUILDER_CONFIG.flavorProfiles.map((f) => (
+                    <option key={f.id} value={f.id}>
+                      {f.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 4. Requested Date */}
+              <div className="form-group">
+                <label htmlFor="eb-date" className="form-label">
+                  תאריך מבוקש לאירוע:
+                </label>
+                <input
+                  type="date"
+                  id="eb-date"
+                  className="form-input"
+                  value={eventBuilder.date}
+                  onChange={(e) =>
+                    setEventBuilder({ ...eventBuilder, date: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+
+            {/* 5. Free Text Notes */}
+            <div className="form-group" style={{ marginTop: '1.25rem' }}>
+              <label htmlFor="eb-notes" className="form-label">
+                פרטים נוספים, רעיון לעיצוב או שאלות:
+              </label>
+              <textarea
+                id="eb-notes"
+                className="form-textarea"
+                rows="3"
+                placeholder="לדוגמה: עוגה בצבעי ורוד עתיק וזהב, כיתוב 'מזל טוב ליובל', אלרגיה לבוטנים..."
+                value={eventBuilder.notes}
+                onChange={(e) =>
+                  setEventBuilder({ ...eventBuilder, notes: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="event-builder-form__submit-row">
+              <button type="submit" className="btn btn--primary btn--large">
+                <WhatsAppIcon />
+                <span>שליחת מפרט האירוע לוואטסאפ לתיאום</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      {/* ── CONTACT & HOURS SECTION ──────────────────── */}
+      <section id="contact" className="contact-section">
+        <div className="section-container">
+          <div className="section-header">
+            <span className="section-header__tag">אנחנו כאן עבורכם</span>
+            <h2 className="section-header__title">יצירת קשר והזמנות</h2>
+            <p className="section-header__subtitle">
+              נשמח לענות על כל שאלה, לתאם משלוח או לייעץ בבחירת הקינוחים.
+            </p>
+          </div>
+
+          <div className="contact-section__grid">
+            <div className="contact-cards">
+              <a
+                href={`tel:${CONTACT_INFO.phoneClean}`}
+                className="contact-card"
+              >
+                <div className="contact-card__icon">
+                  <PhoneIcon />
+                </div>
+                <div className="contact-card__info">
+                  <span className="contact-card__label">שיחת טלפון ישירה</span>
+                  <span className="contact-card__value">
+                    {CONTACT_INFO.phoneDisplay}
+                  </span>
+                </div>
+              </a>
+
+              <a
+                href={`https://wa.me/${CONTACT_INFO.whatsappNum}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-card contact-card--highlight"
+              >
+                <div className="contact-card__icon">
+                  <WhatsAppIcon />
+                </div>
+                <div className="contact-card__info">
+                  <span className="contact-card__label">וואטסאפ מהיר להזמנות</span>
+                  <span className="contact-card__value">
+                    זמינות מהירה בימים א׳-ו׳
+                  </span>
+                </div>
+              </a>
+
+              <a
+                href={CONTACT_INFO.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-card"
+              >
+                <div className="contact-card__icon">
+                  <InstagramIcon />
+                </div>
+                <div className="contact-card__info">
+                  <span className="contact-card__label">אינסטגרם</span>
+                  <span className="contact-card__value">
+                    {CONTACT_INFO.instagramHandle}
+                  </span>
+                </div>
+              </a>
+
+              <div className="contact-card">
+                <div className="contact-card__icon">
+                  <MapPinIcon />
+                </div>
+                <div className="contact-card__info">
+                  <span className="contact-card__label">אזור פעילות</span>
+                  <span className="contact-card__value">
+                    {CONTACT_INFO.address}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Working Hours Card */}
+            <div className="hours-card">
+              <div className="hours-card__header">
+                <ClockIcon />
+                <h3>שעות פעילות הסטודיו</h3>
+              </div>
+              <ul className="hours-card__list">
+                {CONTACT_INFO.workingHours.map((item, idx) => (
+                  <li key={idx} className="hours-card__item">
+                    <span className="hours-card__day">{item.day}</span>
+                    <span className="hours-card__line" />
+                    <span className="hours-card__hours">{item.hours}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="hours-card__note">
+                * כל המוצרים נאפים לפי הזמנה מראש להבטחת טריות מרבית.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FULL MENU PAGE VIEW (/menu)
+   ═══════════════════════════════════════════════════════════ */
+
+function MenuPage({
+  filteredProducts,
+  selectedCategory,
+  setSelectedCategory,
+  addToCart,
+  openProductInquiry,
+}) {
+  return (
+    <section id="menu-page-top" className="menu-page">
+      <div className="section-container">
+        <div className="menu-page__header">
+          <Link
+            to="/"
+            className="menu-page__back-btn"
+          >
+            <ArrowLeftIcon />
+            <span>חזרה לדף הבית</span>
+          </Link>
+
+          <div className="section-header">
+            <span className="section-header__tag">חוויית טעמים בלתי נשכחת</span>
+            <h2 className="section-header__title">קולקציית הקינוחים המלאה</h2>
+            <p className="section-header__subtitle">
+              בחרו את הקינוח המושלם עבורכם. ניתן להוסיף ישירות לסל ההזמנות
+              או להתייעץ איתנו ישירות בוואטסאפ על כל פריט.
+            </p>
+          </div>
+        </div>
+
+        {/* Category Filter Pills */}
+        <div
+          className="category-filters"
+          role="tablist"
+          aria-label="סינון קינוחים לפי קטגוריה"
+        >
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat.id}
+              type="button"
+              role="tab"
+              aria-selected={selectedCategory === cat.id}
+              className={`category-pill ${
+                selectedCategory === cat.id ? 'category-pill--active' : ''
+              }`}
+              onClick={() => setSelectedCategory(cat.id)}
+            >
+              <span className="category-pill__icon">{cat.icon}</span>
+              <span>{cat.name}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Products Grid - Identical footprint with Home page */}
+        <div className="products-grid">
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              addToCart={addToCart}
+              openProductInquiry={openProductInquiry}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════
    MAIN APP COMPONENT
    ═══════════════════════════════════════════════════════════ */
 
 export default function App() {
-  /* ── 1. Cart State ───────────────────────────────────────── */
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  /* ── 1. Cart State ──────────────────────────────────────── */
   const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [orderMode, setOrderMode] = useState('pickup'); // 'pickup' | 'delivery'
@@ -113,7 +671,7 @@ export default function App() {
   });
   const [checkoutErrors, setCheckoutErrors] = useState({});
 
-  /* ── 2. Menu Filtering ───────────────────────────────────── */
+  /* ── 2. Menu Filtering ──────────────────────────────────── */
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const filteredProducts = useMemo(() => {
@@ -121,7 +679,18 @@ export default function App() {
     return PRODUCTS.filter((p) => p.category === selectedCategory);
   }, [selectedCategory]);
 
-  /* ── 3. Custom Event Order Builder State ──────────────────── */
+  /* ── 3. Home Page Highlight Rows ────────────────────────── */
+  const bestSellers = useMemo(
+    () => PRODUCTS.filter((p) => p.badge === 'נמכר ביותר').slice(0, 3),
+    []
+  );
+
+  const newArrivals = useMemo(
+    () => PRODUCTS.filter((p) => p.badge === 'חדש').slice(0, 3),
+    []
+  );
+
+  /* ── 4. Custom Event Order Builder State ─────────────────── */
   const [eventBuilder, setEventBuilder] = useState({
     orderType: EVENT_BUILDER_CONFIG.orderTypes[0].id,
     portions: EVENT_BUILDER_CONFIG.portionSizes[0].id,
@@ -130,11 +699,14 @@ export default function App() {
     notes: '',
   });
 
-  /* ── 4. Accessibility System State (ת"י 5568 AA) ─────────── */
+  /* ── 5. Accessibility System State (ת"י 5568 AA) ──────────── */
   const [a11yOpen, setA11yOpen] = useState(false);
   const [statementOpen, setStatementOpen] = useState(false);
   const [a11y, setA11y] = useState({
     fontScale: 100, // 90 to 150
+    contrastDark: false,
+    contrastLight: false,
+    grayscale: false,
     readableFont: false,
     highlightLinks: false,
     highlightHeadings: false,
@@ -148,7 +720,14 @@ export default function App() {
   const [scrolled, setScrolled] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
-  /* ── 5. Effects ──────────────────────────────────────────── */
+  /* Refs for focus trap */
+  const a11yPanelRef = useRef(null);
+  const a11yTriggerRef = useRef(null);
+
+  /* ── 6. Scroll To Top on Route Change ───────────────────── */
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   // Header scroll & back to top
   useEffect(() => {
@@ -188,6 +767,14 @@ export default function App() {
     document.documentElement.style.fontSize = `${a11y.fontScale}%`;
 
     const bodyClass = document.body.classList;
+    bodyClass.toggle('accessible-contrast-dark', a11y.contrastDark);
+    bodyClass.toggle('a11y-contrast-dark', a11y.contrastDark);
+    bodyClass.toggle('accessible-contrast-light', a11y.contrastLight);
+    bodyClass.toggle('a11y-contrast-light', a11y.contrastLight);
+
+    document.documentElement.classList.toggle('a11y-grayscale', a11y.grayscale);
+    bodyClass.toggle('a11y-grayscale', a11y.grayscale);
+
     bodyClass.toggle('a11y-readable-font', a11y.readableFont);
     bodyClass.toggle('a11y-highlight-links', a11y.highlightLinks);
     bodyClass.toggle('a11y-highlight-headings', a11y.highlightHeadings);
@@ -196,7 +783,53 @@ export default function App() {
     bodyClass.toggle('a11y-large-cursor', a11y.largeCursor);
   }, [a11y]);
 
-  /* ── 6. Cart Actions ─────────────────────────────────────── */
+  // Accessibility Panel Focus Trap
+  useEffect(() => {
+    if (!a11yOpen) {
+      if (a11yTriggerRef.current) {
+        a11yTriggerRef.current.focus();
+      }
+      return;
+    }
+
+    const panel = a11yPanelRef.current;
+    if (!panel) return;
+
+    const focusableSelector =
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
+    const handleTabKey = (e) => {
+      if (e.key !== 'Tab') return;
+
+      const focusables = panel.querySelectorAll(focusableSelector);
+      if (focusables.length === 0) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    const focusables = panel.querySelectorAll(focusableSelector);
+    if (focusables.length > 0) {
+      focusables[0].focus();
+    }
+
+    panel.addEventListener('keydown', handleTabKey);
+    return () => panel.removeEventListener('keydown', handleTabKey);
+  }, [a11yOpen]);
+
+  /* ── 7. Cart Actions ────────────────────────────────────── */
   const addToCart = useCallback((product) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.id === product.id);
@@ -232,14 +865,14 @@ export default function App() {
     return cart.reduce((sum, item) => sum + item.qty, 0);
   }, [cart]);
 
-  /* ── 7. Single Product WhatsApp Inquiry ──────────────────── */
+  /* ── 8. Single Product WhatsApp Inquiry ─────────────────── */
   const openProductInquiry = useCallback((productName) => {
     const text = `היי מאיוש, אשמח לברר פרטים נוספים לגבי ${productName} המופיע באתר.`;
     const url = `https://wa.me/${CONTACT_INFO.whatsappNum}?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   }, []);
 
-  /* ── 8. Consolidated Cart WhatsApp Submission ────────────── */
+  /* ── 9. Consolidated Cart WhatsApp Submission ──────────── */
   const handleCheckoutSubmit = (e) => {
     e.preventDefault();
 
@@ -314,7 +947,7 @@ export default function App() {
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };
 
-  /* ── 9. Custom Event Builder WhatsApp Submission ─────────── */
+  /* ── 10. Custom Event Builder WhatsApp Submission ────────── */
   const handleEventBuilderSubmit = (e) => {
     e.preventDefault();
 
@@ -345,19 +978,35 @@ export default function App() {
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
   };
 
-  /* ── 10. Navigation Scroll Helper ────────────────────────── */
-  const scrollToSection = (id) => {
-    setMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  /* ── 11. Section Scroll Helper (handles cross-page /) ────── */
+  const scrollToSection = useCallback(
+    (id) => {
+      setMobileMenuOpen(false);
+      if (location.pathname !== '/') {
+        navigate('/');
+        setTimeout(() => {
+          const element = document.getElementById(id);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 120);
+      } else {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    },
+    [location.pathname, navigate]
+  );
 
-  /* ── 11. Reset Accessibility Settings ────────────────────── */
+  /* ── 12. Reset Accessibility Settings ───────────────────── */
   const resetA11y = () => {
     setA11y({
       fontScale: 100,
+      contrastDark: false,
+      contrastLight: false,
+      grayscale: false,
       readableFont: false,
       highlightLinks: false,
       highlightHeadings: false,
@@ -365,22 +1014,26 @@ export default function App() {
       stopMotion: false,
       largeCursor: false,
     });
+    document.documentElement.style.fontSize = '100%';
+    document.documentElement.classList.remove('a11y-grayscale');
   };
 
   return (
     <div className="app-layout">
       {/* ═════════════════════════════════════════════════════
-          HEADER & NAVIGATION
+          HEADER & NAVIGATION (PERSISTENT)
           ═════════════════════════════════════════════════════ */}
       <header className={`site-header ${scrolled ? 'site-header--scrolled' : ''}`}>
         <div className="site-header__container">
-          {/* Brand */}
-          <a
-            href="#hero"
+          {/* Brand Logo & Name -> navigates to / */}
+          <Link
+            to="/"
             className="site-header__brand"
-            onClick={(e) => {
-              e.preventDefault();
-              scrollToSection('hero');
+            onClick={() => {
+              setMobileMenuOpen(false);
+              if (location.pathname === '/') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
             }}
           >
             <img
@@ -394,17 +1047,21 @@ export default function App() {
                 {CONTACT_INFO.businessTagline}
               </span>
             </div>
-          </a>
+          </Link>
 
           {/* Desktop Nav */}
           <nav className="site-header__nav" aria-label="ניווט ראשי">
-            <button
-              type="button"
-              className="site-header__nav-link"
-              onClick={() => scrollToSection('hero')}
+            <Link
+              to="/"
+              className={`site-header__nav-link ${location.pathname === '/' ? 'site-header__nav-link--active' : ''}`}
+              onClick={() => {
+                if (location.pathname === '/') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
             >
-              ראשי
-            </button>
+              דף הבית
+            </Link>
             <button
               type="button"
               className="site-header__nav-link"
@@ -412,26 +1069,25 @@ export default function App() {
             >
               הסיפור שלי
             </button>
-            <button
-              type="button"
-              className="site-header__nav-link"
-              onClick={() => scrollToSection('menu')}
+            <Link
+              to="/menu"
+              className={`site-header__nav-link ${location.pathname === '/menu' ? 'site-header__nav-link--active' : ''}`}
             >
               תפריט הקינוחים
-            </button>
+            </Link>
             <button
               type="button"
               className="site-header__nav-link"
               onClick={() => scrollToSection('event-builder')}
             >
-              הזמנת אירוע
+              התאמה אישית
             </button>
             <button
               type="button"
               className="site-header__nav-link"
               onClick={() => scrollToSection('contact')}
             >
-              צרו קשר
+              מידע חשוב
             </button>
           </nav>
 
@@ -468,13 +1124,18 @@ export default function App() {
           }`}
         >
           <nav className="mobile-nav-menu__links">
-            <button
-              type="button"
+            <Link
+              to="/"
               className="mobile-nav-menu__link"
-              onClick={() => scrollToSection('hero')}
+              onClick={() => {
+                setMobileMenuOpen(false);
+                if (location.pathname === '/') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
             >
-              ראשי
-            </button>
+              דף הבית
+            </Link>
             <button
               type="button"
               className="mobile-nav-menu__link"
@@ -482,26 +1143,26 @@ export default function App() {
             >
               הסיפור שלי
             </button>
-            <button
-              type="button"
+            <Link
+              to="/menu"
               className="mobile-nav-menu__link"
-              onClick={() => scrollToSection('menu')}
+              onClick={() => setMobileMenuOpen(false)}
             >
               תפריט הקינוחים
-            </button>
+            </Link>
             <button
               type="button"
               className="mobile-nav-menu__link"
               onClick={() => scrollToSection('event-builder')}
             >
-              הזמנת אירוע מותאם
+              התאמה אישית לאירועים
             </button>
             <button
               type="button"
               className="mobile-nav-menu__link"
               onClick={() => scrollToSection('contact')}
             >
-              צרו קשר
+              מידע חשוב
             </button>
           </nav>
 
@@ -520,438 +1181,43 @@ export default function App() {
       </header>
 
       {/* ═════════════════════════════════════════════════════
-          MAIN CONTENT
+          MAIN CONTENT - ROUTE VIEWS
           ═════════════════════════════════════════════════════ */}
       <main id="main-content">
-        {/* ── HERO SECTION ─────────────────────────────────── */}
-        <section id="hero" className="hero-section">
-          <div className="hero-section__backdrop-orb hero-section__backdrop-orb--1" />
-          <div className="hero-section__backdrop-orb hero-section__backdrop-orb--2" />
-
-          <div className="section-container hero-section__container">
-            <div className="hero-section__badge">
-              <SparkleIcon />
-              <span>{CONTACT_INFO.businessTagline}</span>
-              <SparkleIcon />
-            </div>
-
-            <h1 className="hero-section__title">
-              אומנות קונדיטוריה
-              <br />
-              <span className="hero-section__title-accent">ברמה הגבוהה ביותר</span>
-            </h1>
-
-            <p className="hero-section__subtitle">
-              עוגות ראווה מעוצבות, טארטים צרפתיים ומארזי קינוחי בוטיק —
-              נאפים בעבודת יד מוקפדת מחומרי הגלם הטובים בעולם.
-            </p>
-
-            <div className="hero-section__cta-group">
-              <button
-                type="button"
-                className="btn btn--primary"
-                onClick={() => scrollToSection('menu')}
-              >
-                <span>לתפריט הקינוחים המלא</span>
-              </button>
-
-              <button
-                type="button"
-                className="btn btn--outline"
-                onClick={() => scrollToSection('event-builder')}
-              >
-                <span>הזמנה מותאמת לאירועים</span>
-              </button>
-            </div>
-
-            <div className="hero-section__stats">
-              <div className="hero-section__stat">
-                <span className="hero-section__stat-num">{ABOUT_INFO.experienceYears}</span>
-                <span className="hero-section__stat-desc">ניסיון קולינרי</span>
-              </div>
-              <div className="hero-section__stat-divider" />
-              <div className="hero-section__stat">
-                <span className="hero-section__stat-num">100%</span>
-                <span className="hero-section__stat-desc">חמאה צרפתית ושוקולד מובחר</span>
-              </div>
-              <div className="hero-section__stat-divider" />
-              <div className="hero-section__stat">
-                <span className="hero-section__stat-num">טרי בלבד</span>
-                <span className="hero-section__stat-desc">אפייה לפי הזמנה אישית</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── ABOUT SECTION ────────────────────────────────── */}
-        <section id="about" className="about-section">
-          <div className="section-container">
-            <div className="section-header">
-              <span className="section-header__tag">נעים להכיר</span>
-              <h2 className="section-header__title">{ABOUT_INFO.title}</h2>
-              <p className="section-header__subtitle">{ABOUT_INFO.subtitle}</p>
-            </div>
-
-            <div className="about-section__grid">
-              <div className="about-section__content">
-                <p className="about-section__paragraph">{ABOUT_INFO.bioParagraph1}</p>
-                <p className="about-section__paragraph">{ABOUT_INFO.bioParagraph2}</p>
-
-                <blockquote className="about-section__quote">
-                  <p>{ABOUT_INFO.highlightQuote}</p>
-                  <cite>— מיה, מייסדת בוטיק מאיוש</cite>
-                </blockquote>
-
-                <div className="about-section__values">
-                  {ABOUT_INFO.values.map((v, idx) => (
-                    <div key={idx} className="about-section__value-card">
-                      <h4 className="about-section__value-title">{v.title}</h4>
-                      <p className="about-section__value-desc">{v.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="about-section__visual">
-                <div className="about-section__card-highlight">
-                  <img
-                    src={CONTACT_INFO.logo}
-                    alt={CONTACT_INFO.businessName}
-                    className="about-section__author-logo"
-                  />
-                  <h3 className="about-section__author-title">
-                    {CONTACT_INFO.businessName}
-                  </h3>
-                  <p className="about-section__author-role">{ABOUT_INFO.currentRole}</p>
-                  <span className="about-section__author-edu">{ABOUT_INFO.education}</span>
-
-                  <div className="about-section__contact-badge">
-                    <PhoneIcon />
-                    <a href={`tel:${CONTACT_INFO.phoneClean}`}>
-                      {CONTACT_INFO.phoneDisplay}
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── MENU & PRODUCT CATALOG SECTION ───────────────── */}
-        <section id="menu" className="menu-section">
-          <div className="section-container">
-            <div className="section-header">
-              <span className="section-header__tag">חוויית טעמים בלתי נשכחת</span>
-              <h2 className="section-header__title">תפריט הקינוחים שלנו</h2>
-              <p className="section-header__subtitle">
-                בחרו את הקינוח המושלם עבורכם. ניתן להוסיף ישירות לסל ההזמנות
-                או להתייעץ איתנו ישירות בוואטסאפ על כל פריט.
-              </p>
-            </div>
-
-            {/* Category Filter Pills */}
-            <div
-              className="category-filters"
-              role="tablist"
-              aria-label="סינון קינוחים לפי קטגוריה"
-            >
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={selectedCategory === cat.id}
-                  className={`category-pill ${
-                    selectedCategory === cat.id ? 'category-pill--active' : ''
-                  }`}
-                  onClick={() => setSelectedCategory(cat.id)}
-                >
-                  <span className="category-pill__icon">{cat.icon}</span>
-                  <span>{cat.name}</span>
-                </button>
-              ))}
-            </div>
-
-            {/* Products Grid */}
-            <div className="products-grid">
-              {filteredProducts.map((product) => (
-                <article key={product.id} className="product-card">
-                  <div className="product-card__image-container">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="product-card__image"
-                      loading="lazy"
-                    />
-                    <div className="product-card__vignette" />
-                    {product.badge && (
-                      <span className="product-card__badge">{product.badge}</span>
-                    )}
-                  </div>
-
-                  <div className="product-card__body">
-                    <div className="product-card__header">
-                      <h3 className="product-card__title">{product.name}</h3>
-                      <span className="product-card__price">₪{product.price}</span>
-                    </div>
-
-                    <p className="product-card__desc">{product.description}</p>
-
-                    {/* Dual Action Buttons */}
-                    <div className="product-card__actions">
-                      {/* Button 1: Add to Cart */}
-                      <button
-                        type="button"
-                        className="btn btn--primary btn--card-action"
-                        onClick={() => addToCart(product)}
-                      >
-                        <ShoppingBagIcon />
-                        <span>+ הוספה לסל</span>
-                      </button>
-
-                      {/* Button 2: WhatsApp Inquiry */}
-                      <button
-                        type="button"
-                        className="btn btn--card-inquiry"
-                        onClick={() => openProductInquiry(product.name)}
-                        title="בירור בוואטסאפ על מוצר זה"
-                      >
-                        <WhatsAppIcon />
-                        <span>בירור על המוצר</span>
-                      </button>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── CUSTOM EVENT ORDER BUILDER SECTION ────────────── */}
-        <section id="event-builder" className="event-builder-section">
-          <div className="section-container">
-            <div className="section-header">
-              <span className="section-header__tag">אירועים בהתאמה אישית</span>
-              <h2 className="section-header__title">תכנון עוגה או שולחן קינוחים לאירוע</h2>
-              <p className="section-header__subtitle">
-                חוגגים יום הולדת, חתונה, אירוסין או אירוע חברה?
-                בחרו את הפרטים המתאימים לכם ושלחו אלינו לתיאום ישיר בוואטסאפ.
-              </p>
-            </div>
-
-            <form
-              className="event-builder-form"
-              onSubmit={handleEventBuilderSubmit}
-            >
-              <div className="event-builder-form__grid">
-                {/* 1. Order Type */}
-                <div className="form-group">
-                  <label htmlFor="eb-type" className="form-label">
-                    סוג ההזמנה המבוקשת:
-                  </label>
-                  <select
-                    id="eb-type"
-                    className="form-select"
-                    value={eventBuilder.orderType}
-                    onChange={(e) =>
-                      setEventBuilder({ ...eventBuilder, orderType: e.target.value })
-                    }
-                  >
-                    {EVENT_BUILDER_CONFIG.orderTypes.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* 2. Portions Size */}
-                <div className="form-group">
-                  <label htmlFor="eb-portions" className="form-label">
-                    כמות סועדים משוערת:
-                  </label>
-                  <select
-                    id="eb-portions"
-                    className="form-select"
-                    value={eventBuilder.portions}
-                    onChange={(e) =>
-                      setEventBuilder({ ...eventBuilder, portions: e.target.value })
-                    }
-                  >
-                    {EVENT_BUILDER_CONFIG.portionSizes.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* 3. Flavor Profile */}
-                <div className="form-group">
-                  <label htmlFor="eb-flavor" className="form-label">
-                    פרופיל טעמים מועדף:
-                  </label>
-                  <select
-                    id="eb-flavor"
-                    className="form-select"
-                    value={eventBuilder.flavor}
-                    onChange={(e) =>
-                      setEventBuilder({ ...eventBuilder, flavor: e.target.value })
-                    }
-                  >
-                    {EVENT_BUILDER_CONFIG.flavorProfiles.map((f) => (
-                      <option key={f.id} value={f.id}>
-                        {f.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* 4. Requested Date */}
-                <div className="form-group">
-                  <label htmlFor="eb-date" className="form-label">
-                    תאריך מבוקש לאירוע:
-                  </label>
-                  <input
-                    type="date"
-                    id="eb-date"
-                    className="form-input"
-                    value={eventBuilder.date}
-                    onChange={(e) =>
-                      setEventBuilder({ ...eventBuilder, date: e.target.value })
-                    }
-                  />
-                </div>
-              </div>
-
-              {/* 5. Free Text Notes */}
-              <div className="form-group" style={{ marginTop: '1.25rem' }}>
-                <label htmlFor="eb-notes" className="form-label">
-                  פרטים נוספים, רעיון לעיצוב או שאלות:
-                </label>
-                <textarea
-                  id="eb-notes"
-                  className="form-textarea"
-                  rows="3"
-                  placeholder="לדוגמה: עוגה בצבעי ורוד עתיק וזהב, כיתוב 'מזל טוב ליובל', אלרגיה לבוטנים..."
-                  value={eventBuilder.notes}
-                  onChange={(e) =>
-                    setEventBuilder({ ...eventBuilder, notes: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="event-builder-form__submit-row">
-                <button type="submit" className="btn btn--primary btn--large">
-                  <WhatsAppIcon />
-                  <span>שליחת מפרט האירוע לוואטסאפ לתיאום</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </section>
-
-        {/* ── CONTACT & HOURS SECTION ──────────────────────── */}
-        <section id="contact" className="contact-section">
-          <div className="section-container">
-            <div className="section-header">
-              <span className="section-header__tag">אנחנו כאן עבורכם</span>
-              <h2 className="section-header__title">יצירת קשר והזמנות</h2>
-              <p className="section-header__subtitle">
-                נשמח לענות על כל שאלה, לתאם משלוח או לייעץ בבחירת הקינוחים.
-              </p>
-            </div>
-
-            <div className="contact-section__grid">
-              <div className="contact-cards">
-                <a
-                  href={`tel:${CONTACT_INFO.phoneClean}`}
-                  className="contact-card"
-                >
-                  <div className="contact-card__icon">
-                    <PhoneIcon />
-                  </div>
-                  <div className="contact-card__info">
-                    <span className="contact-card__label">שיחת טלפון ישירה</span>
-                    <span className="contact-card__value">
-                      {CONTACT_INFO.phoneDisplay}
-                    </span>
-                  </div>
-                </a>
-
-                <a
-                  href={`https://wa.me/${CONTACT_INFO.whatsappNum}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="contact-card contact-card--highlight"
-                >
-                  <div className="contact-card__icon">
-                    <WhatsAppIcon />
-                  </div>
-                  <div className="contact-card__info">
-                    <span className="contact-card__label">וואטסאפ מהיר להזמנות</span>
-                    <span className="contact-card__value">
-                      זמינות מהירה בימים א׳-ו׳
-                    </span>
-                  </div>
-                </a>
-
-                <a
-                  href={CONTACT_INFO.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="contact-card"
-                >
-                  <div className="contact-card__icon">
-                    <InstagramIcon />
-                  </div>
-                  <div className="contact-card__info">
-                    <span className="contact-card__label">אינסטגרם</span>
-                    <span className="contact-card__value">
-                      {CONTACT_INFO.instagramHandle}
-                    </span>
-                  </div>
-                </a>
-
-                <div className="contact-card">
-                  <div className="contact-card__icon">
-                    <MapPinIcon />
-                  </div>
-                  <div className="contact-card__info">
-                    <span className="contact-card__label">אזור פעילות</span>
-                    <span className="contact-card__value">
-                      {CONTACT_INFO.address}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Working Hours Card */}
-              <div className="hours-card">
-                <div className="hours-card__header">
-                  <ClockIcon />
-                  <h3>שעות פעילות הסטודיו</h3>
-                </div>
-                <ul className="hours-card__list">
-                  {CONTACT_INFO.workingHours.map((item, idx) => (
-                    <li key={idx} className="hours-card__item">
-                      <span className="hours-card__day">{item.day}</span>
-                      <span className="hours-card__line" />
-                      <span className="hours-card__hours">{item.hours}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="hours-card__note">
-                  * כל המוצרים נאפים לפי הזמנה מראש להבטחת טריות מרבית.
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <HomePage
+                bestSellers={bestSellers}
+                newArrivals={newArrivals}
+                addToCart={addToCart}
+                openProductInquiry={openProductInquiry}
+                eventBuilder={eventBuilder}
+                setEventBuilder={setEventBuilder}
+                handleEventBuilderSubmit={handleEventBuilderSubmit}
+                scrollToSection={scrollToSection}
+              />
+            }
+          />
+          <Route
+            path="/menu"
+            element={
+              <MenuPage
+                filteredProducts={filteredProducts}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                addToCart={addToCart}
+                openProductInquiry={openProductInquiry}
+              />
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
 
       {/* ═════════════════════════════════════════════════════
-          FOOTER
+          FOOTER (PERSISTENT)
           ═════════════════════════════════════════════════════ */}
       <footer className="site-footer">
         <div className="section-container site-footer__container">
@@ -968,13 +1234,17 @@ export default function App() {
           </div>
 
           <div className="site-footer__links">
-            <button
-              type="button"
+            <Link
+              to="/"
               className="site-footer__link"
-              onClick={() => scrollToSection('hero')}
+              onClick={() => {
+                if (location.pathname === '/') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
             >
               ראשי
-            </button>
+            </Link>
             <button
               type="button"
               className="site-footer__link"
@@ -982,13 +1252,12 @@ export default function App() {
             >
               הסיפור שלי
             </button>
-            <button
-              type="button"
+            <Link
+              to="/menu"
               className="site-footer__link"
-              onClick={() => scrollToSection('menu')}
             >
               תפריט
-            </button>
+            </Link>
             <button
               type="button"
               className="site-footer__link"
@@ -1038,7 +1307,7 @@ export default function App() {
       </footer>
 
       {/* ═════════════════════════════════════════════════════
-          SLIDE-OUT SHOPPING CART DRAWER
+          SLIDE-OUT SHOPPING CART DRAWER (PERSISTENT, LEFT SIDE)
           ═════════════════════════════════════════════════════ */}
       <div
         className={`drawer-backdrop ${cartOpen ? 'drawer-backdrop--open' : ''}`}
@@ -1077,16 +1346,13 @@ export default function App() {
             <p className="cart-drawer__empty-desc">
               בחרו קינוחים מהתפריט המפנק שלנו והם יתווספו לכאן ישירות.
             </p>
-            <button
-              type="button"
+            <Link
+              to="/menu"
               className="btn btn--primary"
-              onClick={() => {
-                setCartOpen(false);
-                scrollToSection('menu');
-              }}
+              onClick={() => setCartOpen(false)}
             >
               חזרה לתפריט הקינוחים
-            </button>
+            </Link>
           </div>
         ) : (
           <div className="cart-drawer__body">
@@ -1395,7 +1661,7 @@ export default function App() {
       </aside>
 
       {/* ═════════════════════════════════════════════════════
-          ACCESSIBILITY SYSTEM (ת"י 5568 AA)
+          ACCESSIBILITY SYSTEM (ת"י 5568 AA - PERSISTENT)
           ═════════════════════════════════════════════════════ */}
 
       {/* Persistent Floating A11y Toggle Button */}
@@ -1403,8 +1669,9 @@ export default function App() {
         type="button"
         className="a11y-trigger-btn"
         onClick={() => setA11yOpen(true)}
-        aria-label="פתיחת תפריט נגישות"
+        aria-label="הגדרות נגישות"
         title="תפריט נגישות (ת״י 5568)"
+        ref={a11yTriggerRef}
       >
         <AccessibilityIcon />
       </button>
@@ -1423,6 +1690,7 @@ export default function App() {
         role="dialog"
         aria-modal="true"
         aria-label="חלונית הגדרות נגישות"
+        ref={a11yPanelRef}
       >
         <div className="a11y-panel__header">
           <div className="a11y-panel__title-wrap">
@@ -1481,13 +1749,66 @@ export default function App() {
             <button
               type="button"
               className={`a11y-toggle-btn ${
+                a11y.contrastDark ? 'a11y-toggle-btn--active' : ''
+              }`}
+              onClick={() =>
+                setA11y((prev) => ({
+                  ...prev,
+                  contrastDark: !prev.contrastDark,
+                  contrastLight: false,
+                }))
+              }
+            >
+              <span>ניגודיות גבוהה כהה</span>
+              <span className="a11y-toggle-status">
+                {a11y.contrastDark ? 'פעיל ✓' : 'כבוי'}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={`a11y-toggle-btn ${
+                a11y.contrastLight ? 'a11y-toggle-btn--active' : ''
+              }`}
+              onClick={() =>
+                setA11y((prev) => ({
+                  ...prev,
+                  contrastLight: !prev.contrastLight,
+                  contrastDark: false,
+                }))
+              }
+            >
+              <span>ניגודיות גבוהה בהיר</span>
+              <span className="a11y-toggle-status">
+                {a11y.contrastLight ? 'פעיל ✓' : 'כבוי'}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={`a11y-toggle-btn ${
+                a11y.grayscale ? 'a11y-toggle-btn--active' : ''
+              }`}
+              onClick={() =>
+                setA11y((prev) => ({ ...prev, grayscale: !prev.grayscale }))
+              }
+            >
+              <span>מצב גוני אפור</span>
+              <span className="a11y-toggle-status">
+                {a11y.grayscale ? 'פעיל ✓' : 'כבוי'}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              className={`a11y-toggle-btn ${
                 a11y.readableFont ? 'a11y-toggle-btn--active' : ''
               }`}
               onClick={() =>
                 setA11y((prev) => ({ ...prev, readableFont: !prev.readableFont }))
               }
             >
-              <span>גופן קריא ופשוט</span>
+              <span>גופן קריא ופשוט (דיסלקציה)</span>
               <span className="a11y-toggle-status">
                 {a11y.readableFont ? 'פעיל ✓' : 'כבוי'}
               </span>
@@ -1601,7 +1922,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* ── ACCESSIBILITY STATEMENT FULL MODAL ───────────── */}
+      {/* ── ACCESSIBILITY STATEMENT FULL MODAL (PERSISTENT) ── */}
       <div
         className={`a11y-modal-backdrop ${
           statementOpen ? 'a11y-modal-backdrop--open' : ''

@@ -51,7 +51,7 @@
   --shadow-sm: 0 2px 8px rgba(74, 40, 15, 0.05);
   --shadow-md: 0 6px 20px rgba(74, 40, 15, 0.08);
   --shadow-lg: 0 12px 36px rgba(74, 40, 15, 0.12);
-  --shadow-drawer: -8px 0 35px rgba(44, 26, 12, 0.25);
+  --shadow-drawer: 8px 0 35px rgba(44, 26, 12, 0.25);
 
   /* Transitions */
   --transition-fast: 0.18s ease-out;
@@ -176,7 +176,10 @@ ul {
   padding: 0.75rem 1.6rem;
   border-radius: var(--radius-pill);
   transition: all var(--transition-fast);
-  white-space: nowrap;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.35;
+  min-height: 44px;
 }
 
 .btn--primary {
@@ -282,6 +285,7 @@ ul {
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  flex-wrap: wrap;
 }
 
 .site-header__nav-link {
@@ -396,6 +400,28 @@ ul {
   position: relative;
   z-index: 1;
   text-align: center;
+}
+
+.hero-section__logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.hero-section__logo-portrait {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3.5px solid var(--color-rose);
+  box-shadow: 0 10px 30px rgba(216, 129, 128, 0.35);
+  background: #ffffff;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.hero-section__logo-portrait:hover {
+  transform: scale(1.05);
+  box-shadow: 0 14px 38px rgba(216, 129, 128, 0.45);
 }
 
 .hero-section__badge {
@@ -663,14 +689,102 @@ ul {
   font-size: 1rem;
 }
 
-/* Products Grid */
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+/* ═══════════════════════════════════════════════════════════
+   HIGHLIGHTS SECTION (HOME PAGE PREVIEWS)
+   ═══════════════════════════════════════════════════════════ */
+.highlights-section {
+  padding: 5rem 0;
+  background: var(--bg-page);
 }
 
-/* Product Card */
+.highlights-row {
+  margin-bottom: 4rem;
+}
+
+.highlights-row__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--color-brown-dark);
+  margin-bottom: 2.2rem;
+  text-align: center;
+}
+
+.highlights-row__title svg {
+  color: var(--color-rose);
+}
+
+.highlights-cta {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FULL MENU DEDICATED PAGE
+   ═══════════════════════════════════════════════════════════ */
+.menu-page {
+  padding: 7.5rem 0 6rem 0;
+  background: var(--bg-page);
+  min-height: 85vh;
+}
+
+.menu-page__header {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.menu-page__back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-light);
+  color: var(--color-brown);
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.menu-page__back-btn:hover {
+  background: var(--color-brown);
+  color: #ffffff;
+  border-color: var(--color-brown);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+
+.menu-page__back-btn svg {
+  transition: transform var(--transition-fast);
+}
+
+.menu-page__back-btn:hover svg {
+  transform: translateX(3px);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PRODUCTS GRID & HIGHLIGHTS GRID (IDENTICAL CARD FOOTPRINT)
+   ═══════════════════════════════════════════════════════════ */
+.products-grid,
+.highlights-row__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 340px));
+  justify-content: center;
+  gap: 24px;
+  max-width: 1080px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Product Card - Completely Uniform on Both Home and Menu */
 .product-card {
   background: var(--bg-surface);
   border-radius: var(--radius-lg);
@@ -680,6 +794,9 @@ ul {
   display: flex;
   flex-direction: column;
   transition: all var(--transition-normal);
+  width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
 }
 
 .product-card:hover {
@@ -688,7 +805,8 @@ ul {
   transform: translateY(-4px);
 }
 
-.product-card__image-container {
+.product-card__image-container,
+.product-img-wrapper {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
@@ -751,7 +869,7 @@ ul {
 
 .product-card__title {
   font-family: var(--font-heading);
-  font-size: 1.25rem;
+  font-size: 1.22rem;
   font-weight: 700;
   color: var(--color-brown-dark);
   line-height: 1.3;
@@ -778,12 +896,14 @@ ul {
   display: flex;
   gap: 0.6rem;
   margin-top: auto;
+  flex-wrap: wrap;
 }
 
 .btn--card-action {
   flex: 1.2;
-  padding: 0.6rem 0.8rem;
+  padding: 0.65rem 0.8rem;
   font-size: 0.88rem;
+  min-height: 42px;
 }
 
 .btn--card-inquiry {
@@ -792,7 +912,7 @@ ul {
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
-  padding: 0.6rem 0.8rem;
+  padding: 0.65rem 0.8rem;
   border-radius: var(--radius-pill);
   font-size: 0.85rem;
   font-weight: 600;
@@ -800,6 +920,7 @@ ul {
   background: var(--bg-surface-alt);
   border: 1px solid var(--border-light);
   transition: all var(--transition-fast);
+  min-height: 42px;
 }
 
 .btn--card-inquiry:hover {
@@ -1140,12 +1261,13 @@ a.contact-card:hover {
   position: fixed;
   top: 0;
   bottom: 0;
-  right: 0;
+  left: 0;
+  right: auto;
   width: min(440px, 100vw);
   background: var(--bg-surface);
   z-index: 2001;
   box-shadow: var(--shadow-drawer);
-  transform: translateX(100%);
+  transform: translateX(-100%);
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
   flex-direction: column;
@@ -1717,55 +1839,507 @@ a.contact-card:hover {
 }
 
 /* ═══════════════════════════════════════════════════════════
-   ACCESSIBILITY DOM OVERRIDE CLASSES
+   ACCESSIBILITY DOM OVERRIDE CLASSES (ת"י 5568 / WCAG 2.1 AA)
    ═══════════════════════════════════════════════════════════ */
 
-/* 1. Readable Font */
+/* ── 1. LIGHT CONTRAST MODE (Structured Visual Layers, No Washout) ── */
+body.accessible-contrast-light,
+body.a11y-contrast-light {
+  --bg-page: #f5f5f7;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-alt: #f0f0f2;
+  --bg-dark-accent: #111111;
+
+  --text-primary: #000000;
+  --text-secondary: #2d3748;
+  --text-muted: #374151;
+  --text-inverse: #ffffff;
+
+  --border-light: #1a1a1a;
+  --border-rose: #000000;
+  --border-focus: #000000;
+
+  background-color: #f5f5f7 !important;
+  color: #000000 !important;
+}
+
+body.accessible-contrast-light .site-header,
+body.a11y-contrast-light .site-header {
+  background: #ffffff !important;
+  border-bottom: 2px solid #1a1a1a !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.accessible-contrast-light .site-header__brand-name,
+body.a11y-contrast-light .site-header__brand-name,
+body.accessible-contrast-light .site-header__nav-link,
+body.a11y-contrast-light .site-header__nav-link {
+  color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+body.accessible-contrast-light .site-header__nav-link:hover,
+body.a11y-contrast-light .site-header__nav-link:hover,
+body.accessible-contrast-light .site-header__nav-link--active,
+body.a11y-contrast-light .site-header__nav-link--active {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* Light Mode Cards & Containers */
+body.accessible-contrast-light .product-card,
+body.a11y-contrast-light .product-card,
+body.accessible-contrast-light .about-section__value-card,
+body.a11y-contrast-light .about-section__value-card,
+body.accessible-contrast-light .about-section__card-highlight,
+body.a11y-contrast-light .about-section__card-highlight,
+body.accessible-contrast-light .contact-card,
+body.a11y-contrast-light .contact-card,
+body.accessible-contrast-light .hours-card,
+body.a11y-contrast-light .hours-card,
+body.accessible-contrast-light .event-builder-form,
+body.a11y-contrast-light .event-builder-form,
+body.accessible-contrast-light .cart-item,
+body.a11y-contrast-light .cart-item,
+body.accessible-contrast-light .delivery-fields-box,
+body.a11y-contrast-light .delivery-fields-box,
+body.accessible-contrast-light .about-section__quote,
+body.a11y-contrast-light .about-section__quote,
+body.accessible-contrast-light .a11y-control-card,
+body.a11y-contrast-light .a11y-control-card,
+body.accessible-contrast-light .a11y-toggle-btn,
+body.a11y-contrast-light .a11y-toggle-btn {
+  background: #ffffff !important;
+  border: 2px solid #1a1a1a !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Light Mode Drawer & Modals */
+body.accessible-contrast-light .cart-drawer,
+body.a11y-contrast-light .cart-drawer,
+body.accessible-contrast-light .a11y-panel,
+body.a11y-contrast-light .a11y-panel,
+body.accessible-contrast-light .a11y-statement-modal,
+body.a11y-contrast-light .a11y-statement-modal {
+  background: #ffffff !important;
+  border: 2px solid #1a1a1a !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25) !important;
+  color: #000000 !important;
+}
+
+body.accessible-contrast-light .cart-drawer__header,
+body.a11y-contrast-light .cart-drawer__header,
+body.accessible-contrast-light .cart-drawer__footer,
+body.a11y-contrast-light .cart-drawer__footer,
+body.accessible-contrast-light .a11y-panel__header,
+body.a11y-contrast-light .a11y-panel__header,
+body.accessible-contrast-light .a11y-statement-modal__header,
+body.a11y-contrast-light .a11y-statement-modal__header {
+  background: #f0f0f2 !important;
+  border-bottom: 2px solid #1a1a1a !important;
+  color: #000000 !important;
+}
+
+/* Light Mode Text Hierarchy */
+body.accessible-contrast-light h1,
+body.a11y-contrast-light h1,
+body.accessible-contrast-light h2,
+body.a11y-contrast-light h2,
+body.accessible-contrast-light h3,
+body.a11y-contrast-light h3,
+body.accessible-contrast-light h4,
+body.a11y-contrast-light h4,
+body.accessible-contrast-light .section-header__title,
+body.a11y-contrast-light .section-header__title,
+body.accessible-contrast-light .product-card__title,
+body.a11y-contrast-light .product-card__title,
+body.accessible-contrast-light .hero-section__title,
+body.a11y-contrast-light .hero-section__title {
+  color: #000000 !important;
+  font-weight: 800 !important;
+}
+
+body.accessible-contrast-light p,
+body.a11y-contrast-light p,
+body.accessible-contrast-light span,
+body.a11y-contrast-light span,
+body.accessible-contrast-light .section-header__subtitle,
+body.a11y-contrast-light .section-header__subtitle,
+body.accessible-contrast-light .product-card__desc,
+body.a11y-contrast-light .product-card__desc,
+body.accessible-contrast-light .hero-section__subtitle,
+body.a11y-contrast-light .hero-section__subtitle,
+body.accessible-contrast-light .form-label,
+body.a11y-contrast-light .form-label {
+  color: #2d3748 !important;
+}
+
+body.accessible-contrast-light .product-card__price,
+body.a11y-contrast-light .product-card__price,
+body.accessible-contrast-light .cart-drawer__total-sum,
+body.a11y-contrast-light .cart-drawer__total-sum {
+  color: #000000 !important;
+  font-weight: 900 !important;
+}
+
+/* Light Mode Action Buttons */
+body.accessible-contrast-light .btn--primary,
+body.a11y-contrast-light .btn--primary,
+body.accessible-contrast-light .cart-trigger-btn,
+body.a11y-contrast-light .cart-trigger-btn,
+body.accessible-contrast-light .a11y-trigger-btn,
+body.a11y-contrast-light .a11y-trigger-btn {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #000000 !important;
+  box-shadow: none !important;
+}
+
+body.accessible-contrast-light .btn--primary:hover,
+body.a11y-contrast-light .btn--primary:hover,
+body.accessible-contrast-light .cart-trigger-btn:hover,
+body.a11y-contrast-light .cart-trigger-btn:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+body.accessible-contrast-light .btn--outline,
+body.a11y-contrast-light .btn--outline,
+body.accessible-contrast-light .btn--card-inquiry,
+body.a11y-contrast-light .btn--card-inquiry,
+body.accessible-contrast-light .category-pill,
+body.a11y-contrast-light .category-pill,
+body.accessible-contrast-light .fulfillment-btn,
+body.a11y-contrast-light .fulfillment-btn,
+body.accessible-contrast-light .menu-page__back-btn,
+body.a11y-contrast-light .menu-page__back-btn {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: 2px solid #1a1a1a !important;
+  font-weight: 700 !important;
+}
+
+body.accessible-contrast-light .btn--card-inquiry:hover,
+body.a11y-contrast-light .btn--card-inquiry:hover,
+body.accessible-contrast-light .category-pill:hover,
+body.a11y-contrast-light .category-pill:hover,
+body.accessible-contrast-light .category-pill--active,
+body.a11y-contrast-light .category-pill--active,
+body.accessible-contrast-light .fulfillment-btn--active,
+body.a11y-contrast-light .fulfillment-btn--active {
+  background: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+/* Light Mode Badges */
+body.accessible-contrast-light .product-card__badge,
+body.a11y-contrast-light .product-card__badge,
+body.accessible-contrast-light .hero-section__badge,
+body.a11y-contrast-light .hero-section__badge,
+body.accessible-contrast-light .section-header__tag,
+body.a11y-contrast-light .section-header__tag {
+  background: #ffffff !important;
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
+  font-weight: 800 !important;
+}
+
+/* Light Mode Form Inputs */
+body.accessible-contrast-light .form-input,
+body.a11y-contrast-light .form-input,
+body.accessible-contrast-light .form-select,
+body.a11y-contrast-light .form-select,
+body.accessible-contrast-light .form-textarea,
+body.a11y-contrast-light .form-textarea {
+  background: #ffffff !important;
+  border: 2px solid #000000 !important;
+  color: #000000 !important;
+}
+
+/* ── 2. DARK CONTRAST MODE (Structured Visual Layers, No Blackout) ── */
+body.accessible-contrast-dark,
+body.a11y-contrast-dark {
+  --bg-page: #000000;
+  --bg-surface: #141414;
+  --bg-surface-elevated: #1a1a1a;
+  --bg-surface-alt: #222222;
+  --bg-dark-accent: #0a0a0a;
+
+  --text-primary: #ffff00;
+  --text-secondary: #ffffff;
+  --text-muted: #e2e8f0;
+  --text-inverse: #000000;
+
+  --border-light: #ffff00;
+  --border-rose: #ffff00;
+  --border-focus: #ffff00;
+
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+body.accessible-contrast-dark .site-header,
+body.a11y-contrast-dark .site-header {
+  background: #0a0a0a !important;
+  border-bottom: 2px solid #ffff00 !important;
+}
+
+body.accessible-contrast-dark .site-header__brand-name,
+body.a11y-contrast-dark .site-header__brand-name,
+body.accessible-contrast-dark .site-header__nav-link,
+body.a11y-contrast-dark .site-header__nav-link {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+body.accessible-contrast-dark .site-header__nav-link:hover,
+body.a11y-contrast-dark .site-header__nav-link:hover,
+body.accessible-contrast-dark .site-header__nav-link--active,
+body.a11y-contrast-dark .site-header__nav-link--active {
+  background: #ffff00 !important;
+  color: #000000 !important;
+}
+
+/* Dark Mode Cards & Containers */
+body.accessible-contrast-dark .product-card,
+body.a11y-contrast-dark .product-card,
+body.accessible-contrast-dark .about-section__value-card,
+body.a11y-contrast-dark .about-section__value-card,
+body.accessible-contrast-dark .about-section__card-highlight,
+body.a11y-contrast-dark .about-section__card-highlight,
+body.accessible-contrast-dark .contact-card,
+body.a11y-contrast-dark .contact-card,
+body.accessible-contrast-dark .hours-card,
+body.a11y-contrast-dark .hours-card,
+body.accessible-contrast-dark .event-builder-form,
+body.a11y-contrast-dark .event-builder-form,
+body.accessible-contrast-dark .cart-item,
+body.a11y-contrast-dark .cart-item,
+body.accessible-contrast-dark .delivery-fields-box,
+body.a11y-contrast-dark .delivery-fields-box,
+body.accessible-contrast-dark .about-section__quote,
+body.a11y-contrast-dark .about-section__quote,
+body.accessible-contrast-dark .about-section,
+body.a11y-contrast-dark .about-section,
+body.accessible-contrast-dark .event-builder-section,
+body.a11y-contrast-dark .event-builder-section,
+body.accessible-contrast-dark .a11y-control-card,
+body.a11y-contrast-dark .a11y-control-card,
+body.accessible-contrast-dark .a11y-toggle-btn,
+body.a11y-contrast-dark .a11y-toggle-btn {
+  background: #141414 !important;
+  border: 2px solid #ffff00 !important;
+  box-shadow: none !important;
+}
+
+/* Dark Mode Drawer & Modals */
+body.accessible-contrast-dark .cart-drawer,
+body.a11y-contrast-dark .cart-drawer,
+body.accessible-contrast-dark .a11y-panel,
+body.a11y-contrast-dark .a11y-panel,
+body.accessible-contrast-dark .a11y-statement-modal,
+body.a11y-contrast-dark .a11y-statement-modal {
+  background: #121212 !important;
+  border: 2px solid #ffff00 !important;
+  color: #ffffff !important;
+}
+
+body.accessible-contrast-dark .cart-drawer__header,
+body.a11y-contrast-dark .cart-drawer__header,
+body.accessible-contrast-dark .cart-drawer__footer,
+body.a11y-contrast-dark .cart-drawer__footer,
+body.accessible-contrast-dark .a11y-panel__header,
+body.a11y-contrast-dark .a11y-panel__header,
+body.accessible-contrast-dark .a11y-statement-modal__header,
+body.a11y-contrast-dark .a11y-statement-modal__header {
+  background: #000000 !important;
+  border-bottom: 2px solid #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+/* Dark Mode Headings & Text */
+body.accessible-contrast-dark h1,
+body.a11y-contrast-dark h1,
+body.accessible-contrast-dark h2,
+body.a11y-contrast-dark h2,
+body.accessible-contrast-dark h3,
+body.a11y-contrast-dark h3,
+body.accessible-contrast-dark h4,
+body.a11y-contrast-dark h4,
+body.accessible-contrast-dark .section-header__title,
+body.a11y-contrast-dark .section-header__title,
+body.accessible-contrast-dark .product-card__title,
+body.a11y-contrast-dark .product-card__title,
+body.accessible-contrast-dark .hero-section__title,
+body.a11y-contrast-dark .hero-section__title,
+body.accessible-contrast-dark .highlights-row__title,
+body.a11y-contrast-dark .highlights-row__title {
+  color: #ffff00 !important;
+}
+
+body.accessible-contrast-dark p,
+body.a11y-contrast-dark p,
+body.accessible-contrast-dark span,
+body.a11y-contrast-dark span,
+body.accessible-contrast-dark .section-header__subtitle,
+body.a11y-contrast-dark .section-header__subtitle,
+body.accessible-contrast-dark .product-card__desc,
+body.a11y-contrast-dark .product-card__desc,
+body.accessible-contrast-dark .hero-section__subtitle,
+body.a11y-contrast-dark .hero-section__subtitle,
+body.accessible-contrast-dark .form-label,
+body.a11y-contrast-dark .form-label {
+  color: #ffffff !important;
+}
+
+body.accessible-contrast-dark .product-card__price,
+body.a11y-contrast-dark .product-card__price,
+body.accessible-contrast-dark .cart-drawer__total-sum,
+body.a11y-contrast-dark .cart-drawer__total-sum {
+  color: #ffff00 !important;
+  font-weight: 900 !important;
+}
+
+/* Dark Mode Action Buttons */
+body.accessible-contrast-dark .btn--primary,
+body.a11y-contrast-dark .btn--primary,
+body.accessible-contrast-dark .cart-trigger-btn,
+body.a11y-contrast-dark .cart-trigger-btn,
+body.accessible-contrast-dark .a11y-trigger-btn,
+body.a11y-contrast-dark .a11y-trigger-btn {
+  background: #ffff00 !important;
+  color: #000000 !important;
+  border: 2px solid #ffff00 !important;
+  font-weight: 800 !important;
+}
+
+body.accessible-contrast-dark .btn--primary:hover,
+body.a11y-contrast-dark .btn--primary:hover,
+body.accessible-contrast-dark .cart-trigger-btn:hover,
+body.a11y-contrast-dark .cart-trigger-btn:hover {
+  background: #000000 !important;
+  color: #ffff00 !important;
+}
+
+body.accessible-contrast-dark .btn--outline,
+body.a11y-contrast-dark .btn--outline,
+body.accessible-contrast-dark .btn--card-inquiry,
+body.a11y-contrast-dark .btn--card-inquiry,
+body.accessible-contrast-dark .category-pill,
+body.a11y-contrast-dark .category-pill,
+body.accessible-contrast-dark .fulfillment-btn,
+body.a11y-contrast-dark .fulfillment-btn,
+body.accessible-contrast-dark .menu-page__back-btn,
+body.a11y-contrast-dark .menu-page__back-btn {
+  background: #141414 !important;
+  color: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
+}
+
+body.accessible-contrast-dark .btn--card-inquiry:hover,
+body.a11y-contrast-dark .btn--card-inquiry:hover,
+body.accessible-contrast-dark .category-pill:hover,
+body.a11y-contrast-dark .category-pill:hover,
+body.accessible-contrast-dark .category-pill--active,
+body.a11y-contrast-dark .category-pill--active,
+body.accessible-contrast-dark .fulfillment-btn--active,
+body.a11y-contrast-dark .fulfillment-btn--active {
+  background: #ffff00 !important;
+  color: #000000 !important;
+}
+
+/* Dark Mode Badges */
+body.accessible-contrast-dark .product-card__badge,
+body.a11y-contrast-dark .product-card__badge,
+body.accessible-contrast-dark .hero-section__badge,
+body.a11y-contrast-dark .hero-section__badge,
+body.accessible-contrast-dark .section-header__tag,
+body.a11y-contrast-dark .section-header__tag {
+  background: #ffff00 !important;
+  border: 2px solid #ffff00 !important;
+  color: #000000 !important;
+  font-weight: 800 !important;
+}
+
+/* Dark Mode Form Inputs */
+body.accessible-contrast-dark .form-input,
+body.a11y-contrast-dark .form-input,
+body.accessible-contrast-dark .form-select,
+body.a11y-contrast-dark .form-select,
+body.accessible-contrast-dark .form-textarea,
+body.a11y-contrast-dark .form-textarea {
+  background: #181818 !important;
+  border: 2px solid #ffff00 !important;
+  color: #ffffff !important;
+}
+
+/* ── 3. GRAYSCALE / MONOCHROME MODE ── */
+html.a11y-grayscale {
+  filter: grayscale(100%) !important;
+}
+
+/* ── 4. READABLE DYSLEXIA-FRIENDLY FONT ── */
 body.a11y-readable-font,
 body.a11y-readable-font * {
-  font-family: Arial, Helvetica, sans-serif !important;
-  letter-spacing: 0.03em;
+  font-family: Arial, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  letter-spacing: 0.04em !important;
+  word-spacing: 0.08em !important;
+  line-height: 1.8 !important;
 }
 
-/* 2. Highlight Links */
+/* ── 5. HIGHLIGHT LINKS & CLICKABLE ELEMENTS ── */
 body.a11y-highlight-links a,
-body.a11y-highlight-links button {
-  outline: 2px solid #000000 !important;
-  text-decoration: underline !important;
+body.a11y-highlight-links button,
+body.a11y-highlight-links [role="button"],
+body.a11y-highlight-links [role="tab"] {
+  outline: 2px solid #e11d48 !important;
+  outline-offset: 2px !important;
+  text-decoration: underline 2px !important;
 }
 
-/* 3. Highlight Headings */
+/* ── 6. HIGHLIGHT HEADINGS ── */
 body.a11y-highlight-headings h1,
 body.a11y-highlight-headings h2,
 body.a11y-highlight-headings h3,
-body.a11y-highlight-headings h4 {
-  background: #ffea00 !important;
+body.a11y-highlight-headings h4,
+body.a11y-highlight-headings .section-header__title,
+body.a11y-highlight-headings .product-card__title {
+  background: #facc15 !important;
   color: #000000 !important;
-  display: inline-block;
-  padding: 0 4px;
+  outline: 2px solid #000000 !important;
+  padding: 2px 8px !important;
+  border-radius: 4px !important;
+  display: inline-block !important;
 }
 
-/* 4. Focus Indicators */
+/* ── 7. FOCUS INDICATORS ── */
 body.a11y-focus-indicators :focus-visible,
 body.a11y-focus-indicators :focus {
-  outline: 4px solid #d32f2f !important;
+  outline: 3px solid #00ffff !important;
   outline-offset: 3px !important;
 }
 
-/* 5. Stop Motion */
+body.accessible-contrast-dark.a11y-focus-indicators :focus-visible,
+body.accessible-contrast-dark.a11y-focus-indicators :focus {
+  outline: 3px solid #ffff00 !important;
+  outline-offset: 3px !important;
+}
+
+/* ── 8. STOP ANIMATIONS & MOTION ── */
 body.a11y-stop-motion *,
 body.a11y-stop-motion *::before,
 body.a11y-stop-motion *::after {
-  animation-duration: 0.001ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.001ms !important;
+  animation: none !important;
+  transition: none !important;
   scroll-behavior: auto !important;
 }
 
-/* 6. Large Cursor */
+/* ── 9. LARGE HIGH-VISIBILITY CURSOR ── */
 body.a11y-large-cursor,
 body.a11y-large-cursor * {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cpath d='M3 3l10 24 4-9 9-4z' fill='%23724319' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E"),
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M4 4l12 28 5-11 11-5z' fill='%23000000' stroke='%23ffffff' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E"),
     auto !important;
 }
 
@@ -1865,8 +2439,11 @@ body.a11y-large-cursor * {
     font-size: 2.4rem;
   }
 
-  .products-grid {
+  .products-grid,
+  .highlights-row__grid {
     grid-template-columns: 1fr;
+    max-width: 360px;
+    padding: 0 0.5rem;
   }
 
   .form-row {

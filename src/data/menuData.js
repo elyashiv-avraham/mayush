@@ -41,7 +41,7 @@ export const PRODUCTS = [
     id: 'cake-red-velvet',
     name: 'רד ולווט רויאל וגבינה',
     category: 'cakes',
-    badge: null,
+    badge: 'נמכר ביותר',
     description:
       'שכבות ספוג רד ולווט קטיפתי עשיר, קרם גבינת שמנת ניו-יורקית אוורירי ועיטור שושני קרם עדינים.',
     price: 230,
@@ -52,7 +52,7 @@ export const PRODUCTS = [
     id: 'cake-caramel-pecan',
     name: 'דולצ׳ה קרמל ופקאן מוזהב',
     category: 'cakes',
-    badge: 'מומלץ',
+    badge: 'נמכר ביותר',
     description:
       'עוגת שכבות שוקולד בלונדי, גנאש קרמל מלוח מבושל בעבודת יד, שברי פקאן מקורמל וקראנץ׳ עוגיות חמאה.',
     price: 250,
@@ -98,7 +98,7 @@ export const PRODUCTS = [
     id: 'tart-exotic-mango',
     name: 'טארט אקזוטי מנגו ופסיפלורה',
     category: 'tarts',
-    badge: 'מרענן',
+    badge: 'חדש',
     description:
       'קרם פסיפלורה חמצמץ, קוביות מנגו טרי, גנאש מוקצף שוקולד לבן וקוקוס קלוי.',
     price: 190,
@@ -111,7 +111,7 @@ export const PRODUCTS = [
     id: 'box-macarons-12',
     name: 'מארז מאקרונים פריזאי (12 יח׳)',
     category: 'boxes',
-    badge: 'מומלץ למתנה',
+    badge: 'חדש',
     description:
       '12 מאקרונים פריכים ונימוחים בטעמים מובחרים: פיסטוק, פטל, שוקולד מריר, וניל, קרמל מלוח וקפה.',
     price: 140,
