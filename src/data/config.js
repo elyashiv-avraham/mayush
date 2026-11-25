@@ -15,7 +15,7 @@ export const CONTACT_INFO = {
   instagramHandle: '@mayush.food',
   email: 'hello@mayush.co.il',
   address: 'תל אביב - משלוחים ואיסוף בתיאום מראש',
-  logo: '/images/logo.jpeg',
+  logo: `${import.meta.env.BASE_URL}images/logo.jpeg`,
   workingHours: [
     { day: 'ראשון – חמישי', hours: '09:00 – 19:00' },
     { day: 'שישי וערבי חג', hours: '08:30 – 14:00' },
