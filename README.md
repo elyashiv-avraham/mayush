@@ -141,6 +141,7 @@ The project is configured for automated continuous deployment to GitHub Pages vi
   4. Builds the production bundle (`npm run build`).
   5. Deploys `./dist` to GitHub Pages.
 
+Link: https://elyashiv-avraham.github.io/mayush/
 ---
 
 ## 📞 Contact & Business Info
